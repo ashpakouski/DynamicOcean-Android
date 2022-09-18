@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/game_field"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginStart="9dp"
-        android:layout_marginEnd="9dp"
-        android:elevation="10dp"
-        app:cardBackgroundColor="#FFF"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="#228B22"
         app:cardCornerRadius="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,18 +16,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <TextView
+        <ImageView
             android:id="@+id/moving_object"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="⚽️"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/close"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Close" />
-
+            android:contentDescription="Golf ball"
+            android:src="@drawable/golf_ball" />
     </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

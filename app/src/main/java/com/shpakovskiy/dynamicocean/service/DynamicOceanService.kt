@@ -4,7 +4,12 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.shpakovskiy.dynamicocean.R
@@ -16,12 +21,37 @@ class DynamicOceanService : Service() {
         private const val NOTIFICATION_CHANNEL_NAME = "Dynamic ocean service"
     }
 
+    private var mSensorManager: SensorManager? = null
+    private var mLight: Sensor? = null
+    private var dynamicOcean: DynamicOcean? = null
+
+    private val mLightSensorListener: SensorEventListener = object : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent) {
+            // [0] | Left -> [0; 10] | Right -> [0; -10]
+            // [0] | Down -> [0; -10] | Up -> [0; 10]
+            dynamicOcean?.moveTo(-1 * event.values[0], event.values[1])
+        }
+
+        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) = Unit
+    }
+
     override fun onCreate() {
         super.onCreate()
 
+        mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mLight = mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+        mLight?.let {
+            mSensorManager?.registerListener(
+                mLightSensorListener, mLight,
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
+        }
+
         startForegroundService()
 
-        DynamicOcean(this).create()
+        dynamicOcean = DynamicOcean(this)
+        dynamicOcean?.create()
     }
 
     private fun startForegroundService() {
@@ -43,7 +73,7 @@ class DynamicOceanService : Service() {
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build()
 
-        startForeground(2, notification)
+        startForeground(42, notification)
     }
 
     override fun onBind(p0: Intent?): IBinder? {
