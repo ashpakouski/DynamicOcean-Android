@@ -11,9 +11,11 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.IBinder
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.shpakovskiy.dynamicocean.R
 import com.shpakovskiy.dynamicocean.view.DynamicOcean
+import kotlin.math.sqrt
 
 class DynamicOceanService : Service() {
     companion object {
@@ -25,10 +27,33 @@ class DynamicOceanService : Service() {
     private var mLight: Sensor? = null
     private var dynamicOcean: DynamicOcean? = null
 
+    private var acceleration = 0f
+    private var currentAcceleration = 0f
+    private var lastAcceleration = 0f
+
     private val mLightSensorListener: SensorEventListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent) {
             // [0] | Left -> [0; 10] | Right -> [0; -10]
             // [0] | Down -> [0; -10] | Up -> [0; 10]
+            // Fetching x,y,z values
+//            val x = event.values[0]
+//            val y = event.values[1]
+//            val z = event.values[2]
+//            lastAcceleration = currentAcceleration
+//
+//            // Getting current accelerations
+//            // with the help of fetched x,y,z values
+//            currentAcceleration = sqrt((x * x + y * y + z * z).toDouble()).toFloat()
+//            val delta: Float = currentAcceleration - lastAcceleration
+//            acceleration = acceleration * 0.9f + delta
+//
+//            // Display a Toast message if
+//            // acceleration value is over 12
+//            if (currentAcceleration != 0F && lastAcceleration != 0F && acceleration > 8) {
+//                Toast.makeText(applicationContext, "Shake event detected", Toast.LENGTH_SHORT)
+//                    .show()
+//            }
+
             dynamicOcean?.moveTo(-1 * event.values[0], event.values[1])
         }
 

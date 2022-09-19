@@ -3,12 +3,14 @@ package com.shpakovskiy.dynamicocean.view
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.PixelFormat
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import com.shpakovskiy.dynamicocean.R
+import kotlin.math.abs
 
 class DynamicOcean(context: Context) {
     companion object {
@@ -70,8 +72,10 @@ class DynamicOcean(context: Context) {
 
     fun destroy() {
         try {
-            windowManager.removeView(rootView)
-            rootView.invalidate()
+            gameField.collapse(COLLAPSED_FIELD_SIZE, COLLAPSED_FIELD_SIZE) {
+                windowManager.removeView(rootView)
+                rootView.invalidate()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -83,47 +87,53 @@ class DynamicOcean(context: Context) {
         var xMove = x * kk
         var yMove = y * kk
 
-        if (movingObject.x + xMove <= 0) {
-            // xMove = -movingObject.x
-            ObjectAnimator.ofFloat(movingObject, View.X, 0F).apply {
-                duration = 250
-                start()
-            }
-        } else if (movingObject.x + movingObject.width + xMove > EXPANDED_FIELD_SIZE) {
-            ObjectAnimator.ofFloat(
-                movingObject,
-                View.X,
-                EXPANDED_FIELD_SIZE.toFloat() - movingObject.width
-            ).apply {
-                duration = 250
-                start()
-            }
+        Log.d(TAG, "${abs(movingObject.x - 20F)}; ${abs(movingObject.y - 20F)}")
+        if (abs(movingObject.x - 20F) < 2.5 && abs(movingObject.y - 20F) < 2.5) {
+            destroy()
+            // Toast.makeText(rootView.context, "You did it", Toast.LENGTH_SHORT).show()
         } else {
-            ObjectAnimator.ofFloat(movingObject, View.X, movingObject.x + xMove).apply {
-                duration = 250
-                start()
+            if (movingObject.x + xMove <= 0) {
+                // xMove = -movingObject.x
+                ObjectAnimator.ofFloat(movingObject, View.X, 0F).apply {
+                    duration = 250
+                    start()
+                }
+            } else if (movingObject.x + movingObject.width + xMove > EXPANDED_FIELD_SIZE) {
+                ObjectAnimator.ofFloat(
+                    movingObject,
+                    View.X,
+                    EXPANDED_FIELD_SIZE.toFloat() - movingObject.width
+                ).apply {
+                    duration = 250
+                    start()
+                }
+            } else {
+                ObjectAnimator.ofFloat(movingObject, View.X, movingObject.x + xMove).apply {
+                    duration = 250
+                    start()
+                }
             }
-        }
 
-        if (movingObject.y + yMove <= 0) {
-            // yMove = movingObject.y
-            ObjectAnimator.ofFloat(movingObject, View.Y, 0F).apply {
-                duration = 250
-                start()
-            }
-        } else if (movingObject.y + movingObject.height + yMove > EXPANDED_FIELD_SIZE) {
-            ObjectAnimator.ofFloat(
-                movingObject,
-                View.Y,
-                EXPANDED_FIELD_SIZE.toFloat() - movingObject.height
-            ).apply {
-                duration = 250
-                start()
-            }
-        } else {
-            ObjectAnimator.ofFloat(movingObject, View.Y, movingObject.y + yMove).apply {
-                duration = 250
-                start()
+            if (movingObject.y + yMove <= 0) {
+                // yMove = movingObject.y
+                ObjectAnimator.ofFloat(movingObject, View.Y, 0F).apply {
+                    duration = 250
+                    start()
+                }
+            } else if (movingObject.y + movingObject.height + yMove > EXPANDED_FIELD_SIZE) {
+                ObjectAnimator.ofFloat(
+                    movingObject,
+                    View.Y,
+                    EXPANDED_FIELD_SIZE.toFloat() - movingObject.height
+                ).apply {
+                    duration = 250
+                    start()
+                }
+            } else {
+                ObjectAnimator.ofFloat(movingObject, View.Y, movingObject.y + yMove).apply {
+                    duration = 250
+                    start()
+                }
             }
         }
     }

@@ -6,9 +6,9 @@ import android.view.animation.Animation
 import android.view.animation.Transformation
 import androidx.cardview.widget.CardView
 
-
 class ExpandableCard(context: Context, attrs: AttributeSet) : CardView(context, attrs) {
-    fun expand(targetWidth: Int, targetHeight: Int) {
+
+    fun expand(targetWidth: Int, targetHeight: Int, onExpanded: () -> Unit) {
         val initialWidth = layoutParams.width
         val initialHeight = layoutParams.height
 
@@ -31,10 +31,16 @@ class ExpandableCard(context: Context, attrs: AttributeSet) : CardView(context, 
 
         animation.duration = (targetHeight / context.resources.displayMetrics.density).toLong() * 3
 
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(p0: Animation?) = Unit
+            override fun onAnimationEnd(p0: Animation?) = onExpanded()
+            override fun onAnimationRepeat(p0: Animation?) = Unit
+        })
+
         startAnimation(animation)
     }
 
-    fun collapse(targetWidth: Int, targetHeight: Int) {
+    fun collapse(targetWidth: Int, targetHeight: Int, onCollapsed: () -> Unit) {
         val initialWidth = layoutParams.width
         val initialHeight = layoutParams.height
 
@@ -57,7 +63,13 @@ class ExpandableCard(context: Context, attrs: AttributeSet) : CardView(context, 
             }
         }
 
-        animation.duration = (initialHeight / context.resources.displayMetrics.density).toLong() * 3
+        animation.duration = (initialHeight / context.resources.displayMetrics.density).toLong() / 2
+
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(p0: Animation?) = Unit
+            override fun onAnimationEnd(p0: Animation?) = onCollapsed()
+            override fun onAnimationRepeat(p0: Animation?) = Unit
+        })
 
         startAnimation(animation)
     }
