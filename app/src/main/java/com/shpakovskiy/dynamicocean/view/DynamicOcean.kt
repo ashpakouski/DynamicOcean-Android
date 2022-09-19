@@ -3,21 +3,18 @@ package com.shpakovskiy.dynamicocean.view
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.PixelFormat
-import android.util.DisplayMetrics
-import android.util.Log
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
-import androidx.cardview.widget.CardView
 import com.shpakovskiy.dynamicocean.R
 
-class DynamicOcean(private val context: Context) {
+class DynamicOcean(context: Context) {
     companion object {
         private const val TAG = "DynamicOcean"
-        private const val FIELD_SIZE = 400
+        private const val EXPANDED_FIELD_SIZE = 500
+        private const val COLLAPSED_FIELD_SIZE = 120
         private const val FIELD_MARGIN = 22
         private const val BALL_SIZE = 80
     }
@@ -25,38 +22,59 @@ class DynamicOcean(private val context: Context) {
     private val rootView: View
     private var rootViewParams: WindowManager.LayoutParams? = null
     private val windowManager: WindowManager
-    private val layoutInflater: LayoutInflater
     private val movingObject: ImageView
-    private val gameField: View
+    private val gameField: ExpandableCard
 
     init {
+        // Root view
         rootViewParams = WindowManager.LayoutParams(
-            FIELD_SIZE,
-            FIELD_SIZE,
+            EXPANDED_FIELD_SIZE,
+            EXPANDED_FIELD_SIZE,
             0 + FIELD_MARGIN, -135 + FIELD_MARGIN,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT
         )
+        rootViewParams?.gravity = Gravity.TOP or Gravity.START
 
-        layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layoutInflater =
+            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         rootView = layoutInflater.inflate(R.layout.dynamic_ocean, null)
 
-//        rootView.findViewById<View>(R.id.close).setOnClickListener {
-//            Log.d("TAG123", "Click detected")
-//            destroy()
-//        }
-
+        //Game field
         gameField = rootView.findViewById(R.id.game_field)
-        movingObject = rootView.findViewById(R.id.moving_object)
+        gameField.layoutParams.width = COLLAPSED_FIELD_SIZE
+        gameField.layoutParams.height = COLLAPSED_FIELD_SIZE
 
+        // Moving object
+        movingObject = rootView.findViewById(R.id.moving_object)
         movingObject.layoutParams.width = BALL_SIZE
         movingObject.layoutParams.height = BALL_SIZE
-        movingObject.x = 200F
-        movingObject.y = 200F
+        movingObject.x = 0F
+        movingObject.y = 0F
 
-        rootViewParams?.gravity = Gravity.TOP or Gravity.START
+        // WindowManager
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    }
+
+    fun create() {
+        try {
+            if (rootView.windowToken == null && rootView.parent == null) {
+                windowManager.addView(rootView, rootViewParams)
+                gameField.expand(EXPANDED_FIELD_SIZE, EXPANDED_FIELD_SIZE)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun destroy() {
+        try {
+            windowManager.removeView(rootView)
+            rootView.invalidate()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun moveTo(x: Float, y: Float) {
@@ -71,8 +89,12 @@ class DynamicOcean(private val context: Context) {
                 duration = 250
                 start()
             }
-        } else if (movingObject.x + movingObject.width + xMove > 400) {
-            ObjectAnimator.ofFloat(movingObject, View.X, 400F - movingObject.width).apply {
+        } else if (movingObject.x + movingObject.width + xMove > EXPANDED_FIELD_SIZE) {
+            ObjectAnimator.ofFloat(
+                movingObject,
+                View.X,
+                EXPANDED_FIELD_SIZE.toFloat() - movingObject.width
+            ).apply {
                 duration = 250
                 start()
             }
@@ -89,8 +111,12 @@ class DynamicOcean(private val context: Context) {
                 duration = 250
                 start()
             }
-        } else if (movingObject.y + movingObject.height + yMove > 400) {
-            ObjectAnimator.ofFloat(movingObject, View.Y, 400F - movingObject.height).apply {
+        } else if (movingObject.y + movingObject.height + yMove > EXPANDED_FIELD_SIZE) {
+            ObjectAnimator.ofFloat(
+                movingObject,
+                View.Y,
+                EXPANDED_FIELD_SIZE.toFloat() - movingObject.height
+            ).apply {
                 duration = 250
                 start()
             }
@@ -99,26 +125,6 @@ class DynamicOcean(private val context: Context) {
                 duration = 250
                 start()
             }
-        }
-    }
-
-    fun create() {
-        try {
-            if (rootView.windowToken == null && rootView.parent == null) {
-                windowManager.addView(rootView, rootViewParams)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun destroy() {
-        try {
-            (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).removeView(rootView)
-//            rootView.invalidate()
-//            (rootView.parent as ViewGroup).removeAllViews()
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 }
