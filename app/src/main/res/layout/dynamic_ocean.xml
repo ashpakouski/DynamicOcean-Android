@@ -18,13 +18,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/grass_background" />
+            android:background="#1DA2D8" />
 
         <ImageView
             android:id="@+id/moving_object"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Golf ball"
-            android:src="@drawable/golf_ball" />
+            android:src="@drawable/blowfish" />
     </com.shpakovskiy.dynamicocean.view.ExpandableCard>
 </LinearLayout>

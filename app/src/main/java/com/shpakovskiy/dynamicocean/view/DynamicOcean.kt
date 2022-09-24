@@ -2,6 +2,7 @@ package com.shpakovskiy.dynamicocean.view
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.content.Intent
 import android.graphics.PixelFormat
 import android.util.Log
 import android.view.Gravity
@@ -10,9 +11,11 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import com.shpakovskiy.dynamicocean.R
+import com.shpakovskiy.dynamicocean.controller.GameListener
+import com.shpakovskiy.dynamicocean.service.DynamicOceanService
 import kotlin.math.abs
 
-class DynamicOcean(context: Context) {
+class DynamicOcean(private val context: Context) : GameListener {
     companion object {
         private const val TAG = "DynamicOcean"
         private const val EXPANDED_FIELD_SIZE = 500
@@ -59,18 +62,29 @@ class DynamicOcean(context: Context) {
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     }
 
+    override fun createOcean() {
+        create()
+    }
+
     fun create() {
         try {
             if (rootView.windowToken == null && rootView.parent == null) {
                 windowManager.addView(rootView, rootViewParams)
-                gameField.expand(EXPANDED_FIELD_SIZE, EXPANDED_FIELD_SIZE)
+                gameField.expand(EXPANDED_FIELD_SIZE, EXPANDED_FIELD_SIZE) {
+                    // TODO: Add ball here
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    fun destroy() {
+    override fun destroyOcean() {
+        context.stopService(Intent(context, DynamicOceanService::class.java))
+        destroy()
+    }
+
+    private fun destroy() {
         try {
             gameField.collapse(COLLAPSED_FIELD_SIZE, COLLAPSED_FIELD_SIZE) {
                 windowManager.removeView(rootView)
@@ -81,11 +95,25 @@ class DynamicOcean(context: Context) {
         }
     }
 
+    override fun xMove(x: Float) {
+        ObjectAnimator.ofFloat(movingObject, View.X, x).apply {
+            duration = 250
+            start()
+        }
+    }
+
+    override fun yMove(y: Float) {
+        ObjectAnimator.ofFloat(movingObject, View.Y, y).apply {
+            duration = 250
+            start()
+        }
+    }
+
     fun moveTo(x: Float, y: Float) {
         val kk = 10
 
-        var xMove = x * kk
-        var yMove = y * kk
+        val xMove = x * kk
+        val yMove = y * kk
 
         Log.d(TAG, "${abs(movingObject.x - 20F)}; ${abs(movingObject.y - 20F)}")
         if (abs(movingObject.x - 20F) < 2.5 && abs(movingObject.y - 20F) < 2.5) {

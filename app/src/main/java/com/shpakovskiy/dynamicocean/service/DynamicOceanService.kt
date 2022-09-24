@@ -11,27 +11,31 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.IBinder
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.shpakovskiy.dynamicocean.R
+import com.shpakovskiy.dynamicocean.controller.GameController
+import com.shpakovskiy.dynamicocean.controller.DynamicOceanController
 import com.shpakovskiy.dynamicocean.view.DynamicOcean
-import kotlin.math.sqrt
 
 class DynamicOceanService : Service() {
     companion object {
-        private const val NOTIFICATION_CHANNEL_ID = "com.shpakovskiy.dynamicocean"
+        private const val NOTIFICATION_CHANNEL_ID = "com.shpakovskiy.dynamicfield"
         private const val NOTIFICATION_CHANNEL_NAME = "Dynamic ocean service"
+        // private const val STABILIZATION_CYCLES = 10
     }
 
-    private var mSensorManager: SensorManager? = null
-    private var mLight: Sensor? = null
-    private var dynamicOcean: DynamicOcean? = null
+    private var sensorManager: SensorManager? = null
+    private var accelerometer: Sensor? = null
 
-    private var acceleration = 0f
-    private var currentAcceleration = 0f
-    private var lastAcceleration = 0f
+    private lateinit var gameController: GameController
 
-    private val mLightSensorListener: SensorEventListener = object : SensorEventListener {
+    // private var acceleration = 0f
+    // private var currentAcceleration = 0f
+    // private var lastAcceleration = 0f
+
+    // private var serialShakes = 0
+
+    private val accelerometerListener: SensorEventListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent) {
             // [0] | Left -> [0; 10] | Right -> [0; -10]
             // [0] | Down -> [0; -10] | Up -> [0; 10]
@@ -45,16 +49,25 @@ class DynamicOceanService : Service() {
 //            // with the help of fetched x,y,z values
 //            currentAcceleration = sqrt((x * x + y * y + z * z).toDouble()).toFloat()
 //            val delta: Float = currentAcceleration - lastAcceleration
-//            acceleration = acceleration * 0.9f + delta
+//            acceleration = /*acceleration * 0.9f +*/ delta
 //
 //            // Display a Toast message if
 //            // acceleration value is over 12
-//            if (currentAcceleration != 0F && lastAcceleration != 0F && acceleration > 8) {
-//                Toast.makeText(applicationContext, "Shake event detected", Toast.LENGTH_SHORT)
-//                    .show()
+//            Log.d("TAG123", "CA: $currentAcceleration; LA: $lastAcceleration; A: $acceleration")
+//
+//            if (currentAcceleration != 0F && lastAcceleration != 0F && abs(acceleration) > 2) {
+//                if (serialShakes == 0) {
+//                    Log.d("TAG123", "Shaaaaaake!!!!!!!!")
+//                    Toast.makeText(applicationContext, "Shake event detected", Toast.LENGTH_SHORT)
+//                        .show()
+//                }
+//                serialShakes++
+//            } else {
+//                serialShakes = 0
 //            }
 
-            dynamicOcean?.moveTo(-1 * event.values[0], event.values[1])
+            //fieldController?.moveTo(-1 * event.values[0], event.values[1])
+            gameController.moveRequest(-1 * event.values[0], event.values[1])
         }
 
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) = Unit
@@ -63,20 +76,20 @@ class DynamicOceanService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        mLight = mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
-        mLight?.let {
-            mSensorManager?.registerListener(
-                mLightSensorListener, mLight,
+        accelerometer?.let {
+            sensorManager?.registerListener(
+                accelerometerListener, accelerometer,
                 SensorManager.SENSOR_DELAY_NORMAL
             )
         }
 
         startForegroundService()
 
-        dynamicOcean = DynamicOcean(this)
-        dynamicOcean?.create()
+        gameController = DynamicOceanController(DynamicOcean(this))
+        gameController.startGame()
     }
 
     private fun startForegroundService() {
