@@ -8,7 +8,7 @@ import androidx.cardview.widget.CardView
 
 class ExpandableCard(context: Context, attrs: AttributeSet) : CardView(context, attrs) {
 
-    fun expand(targetWidth: Int, targetHeight: Int, onExpanded: () -> Unit) {
+    fun resize(targetWidth: Int, targetHeight: Int, onExpanded: () -> Unit) {
         val initialWidth = layoutParams.width
         val initialHeight = layoutParams.height
 
@@ -34,40 +34,6 @@ class ExpandableCard(context: Context, attrs: AttributeSet) : CardView(context, 
         animation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(p0: Animation?) = Unit
             override fun onAnimationEnd(p0: Animation?) = onExpanded()
-            override fun onAnimationRepeat(p0: Animation?) = Unit
-        })
-
-        startAnimation(animation)
-    }
-
-    fun collapse(targetWidth: Int, targetHeight: Int, onCollapsed: () -> Unit) {
-        val initialWidth = layoutParams.width
-        val initialHeight = layoutParams.height
-
-        val widthChange = initialWidth - targetWidth
-        val heightChange = initialHeight - targetHeight
-
-        val animation = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-                val card = this@ExpandableCard
-
-                card.layoutParams.width =
-                    widthChange - (widthChange * interpolatedTime).toInt() + targetWidth
-                card.layoutParams.height =
-                    heightChange - (heightChange * interpolatedTime).toInt() + targetHeight
-                card.requestLayout()
-            }
-
-            override fun willChangeBounds(): Boolean {
-                return true
-            }
-        }
-
-        animation.duration = (initialHeight / context.resources.displayMetrics.density).toLong() / 2
-
-        animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(p0: Animation?) = Unit
-            override fun onAnimationEnd(p0: Animation?) = onCollapsed()
             override fun onAnimationRepeat(p0: Animation?) = Unit
         })
 

@@ -7,9 +7,12 @@ import kotlin.math.roundToInt
 interface GameListener {
     fun xMove(x: Float)
     fun yMove(y: Float)
-    fun createOcean()
     fun destroyOcean()
-    fun initGameField(posX: Int, posY: Int, defaultWidth: Int, defaultHeight: Int)
+
+    fun createGameField(x: Int, y: Int, defaultWidth: Int, defaultHeight: Int)
+    fun resizeGameField(width: Int, height: Int, onDone: () -> Unit)
+
+    fun putGameObject(x: Int, y: Int, width: Int, height: Int)
 }
 
 interface GameController {
@@ -41,9 +44,9 @@ class DynamicOceanController(
 
     override fun initGameField() {
         displayCutout?.let {
-            gameListener.initGameField(
-                posX = (displayCutout.left / 2).roundToInt(),
-                posY = -135 + (displayCutout.top / 2).roundToInt(),
+            gameListener.createGameField(
+                x = (displayCutout.left / 2).roundToInt(),
+                y = -135 + (displayCutout.top / 2).roundToInt(),
                 defaultWidth = (displayCutout.width + displayCutout.left).roundToInt(),
                 defaultHeight = (displayCutout.height + displayCutout.top).roundToInt()
             )
@@ -51,7 +54,18 @@ class DynamicOceanController(
     }
 
     override fun startGame() {
-        gameListener.createOcean()
+        displayCutout?.let {
+            gameListener.resizeGameField(
+                width = (screenDataRepository.screenWidth / 2 + displayCutout.width + displayCutout.left).roundToInt(),
+                height = (screenDataRepository.screenWidth / 2 + displayCutout.width + displayCutout.left).roundToInt()
+            ) {
+                gameListener.putGameObject(
+                    200, 200,
+                    displayCutout.width.roundToInt(),
+                    displayCutout.height.roundToInt()
+                )
+            }
+        }
     }
 
     override fun moveRequest(x: Float, y: Float) {

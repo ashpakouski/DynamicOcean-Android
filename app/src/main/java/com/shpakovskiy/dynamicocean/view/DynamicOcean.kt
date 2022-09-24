@@ -24,12 +24,14 @@ class DynamicOcean(private val context: Context) : GameListener {
     private var rootView: View? = null
     private var rootViewParams: WindowManager.LayoutParams? = null
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private val movingObject: ImageView? = null
+    private var gameObject: ImageView? = null
     private var gameField: ExpandableCard? = null
 
-    override fun initGameField(posX: Int, posY: Int, defaultWidth: Int, defaultHeight: Int) {
+    override fun createGameField(x: Int, y: Int, defaultWidth: Int, defaultHeight: Int) {
         rootViewParams = WindowManager.LayoutParams(
-            defaultWidth, defaultHeight, posX, posY,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            x, y,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT
@@ -44,6 +46,31 @@ class DynamicOcean(private val context: Context) : GameListener {
         gameField = rootView?.findViewById(R.id.game_field)
         gameField?.layoutParams?.width = defaultWidth
         gameField?.layoutParams?.height = defaultHeight
+
+        try {
+            if (rootView?.windowToken == null && rootView?.parent == null) {
+                windowManager.addView(rootView, rootViewParams)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun resizeGameField(width: Int, height: Int, onDone: () -> Unit) {
+        val w = if (width > gameField!!.width) width else width
+        val h = if (height > gameField!!.height) height else -height
+
+        gameField?.resize(w, h) {
+            onDone()
+        }
+    }
+
+    override fun putGameObject(x: Int, y: Int, width: Int, height: Int) {
+        gameObject = rootView?.findViewById(R.id.game_object)
+        gameObject?.x = x.toFloat()
+        gameObject?.y = y.toFloat()
+        gameObject?.layoutParams?.width = width
+        gameObject?.layoutParams?.height = width
     }
 
     /*
@@ -77,23 +104,6 @@ class DynamicOcean(private val context: Context) : GameListener {
     }
      */
 
-    override fun createOcean() {
-        create()
-    }
-
-    fun create() {
-        try {
-            if (rootView?.windowToken == null && rootView?.parent == null) {
-                windowManager.addView(rootView, rootViewParams)
-//                gameField?.expand(EXPANDED_FIELD_SIZE, EXPANDED_FIELD_SIZE) {
-//                    // TODO: Add ball here
-//                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     override fun destroyOcean() {
         context.stopService(Intent(context, DynamicOceanService::class.java))
         destroy()
@@ -101,7 +111,7 @@ class DynamicOcean(private val context: Context) : GameListener {
 
     private fun destroy() {
         try {
-            gameField?.collapse(COLLAPSED_FIELD_SIZE, COLLAPSED_FIELD_SIZE) {
+            gameField?.resize(COLLAPSED_FIELD_SIZE, COLLAPSED_FIELD_SIZE) {
                 windowManager.removeView(rootView)
                 rootView?.invalidate()
             }
@@ -111,8 +121,8 @@ class DynamicOcean(private val context: Context) : GameListener {
     }
 
     override fun xMove(x: Float) {
-        movingObject?.let {
-            ObjectAnimator.ofFloat(movingObject, View.X, x).apply {
+        gameObject?.let {
+            ObjectAnimator.ofFloat(gameObject, View.X, x).apply {
                 duration = 250
                 start()
             }
@@ -120,8 +130,8 @@ class DynamicOcean(private val context: Context) : GameListener {
     }
 
     override fun yMove(y: Float) {
-        movingObject?.let {
-            ObjectAnimator.ofFloat(movingObject, View.Y, y).apply {
+        gameObject?.let {
+            ObjectAnimator.ofFloat(gameObject, View.Y, y).apply {
                 duration = 250
                 start()
             }
