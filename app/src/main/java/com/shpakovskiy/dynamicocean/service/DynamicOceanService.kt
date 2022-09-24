@@ -33,7 +33,6 @@ class DynamicOceanService : Service() {
     // private var acceleration = 0f
     // private var currentAcceleration = 0f
     // private var lastAcceleration = 0f
-
     // private var serialShakes = 0
 
     private val accelerometerListener: SensorEventListener = object : SensorEventListener {
@@ -77,6 +76,19 @@ class DynamicOceanService : Service() {
     override fun onCreate() {
         super.onCreate()
 
+        startForegroundService()
+        registerAccelerometerListener()
+
+        gameController = DynamicOceanController(
+            gameListener = DynamicOcean(this),
+            screenDataRepository = DeviceScreenDataRepository(this)
+        )
+
+        gameController.initGameField()
+        gameController.startGame()
+    }
+
+    private fun registerAccelerometerListener() {
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
@@ -86,15 +98,6 @@ class DynamicOceanService : Service() {
                 SensorManager.SENSOR_DELAY_NORMAL
             )
         }
-
-        startForegroundService()
-
-        gameController = DynamicOceanController(
-            gameListener = DynamicOcean(this),
-            screenDataRepository = DeviceScreenDataRepository(this)
-        )
-
-        gameController.startGame()
     }
 
     private fun startForegroundService() {

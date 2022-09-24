@@ -5,13 +5,17 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.view.DisplayCutout
 import androidx.appcompat.app.AppCompatActivity
+import com.shpakovskiy.dynamicocean.model.toDisplayCutout
 import com.shpakovskiy.dynamicocean.repository.DeviceScreenDataRepository
 import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
 import com.shpakovskiy.dynamicocean.service.DynamicOceanService
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
     private lateinit var screenDataRepository: ScreenDataRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,16 +45,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // TODO: Handle cases, when device doesn't have any cutouts
     override fun onAttachedToWindow() {
         screenDataRepository.screenWidth = window.windowManager.maximumWindowMetrics.bounds.right
         screenDataRepository.screenHeight = window.windowManager.maximumWindowMetrics.bounds.bottom
 
-        Log.d("TAG123", "[${screenDataRepository.screenHeight}; ${screenDataRepository.screenWidth}]")
+        val displayCutout = window.decorView.rootWindowInsets.displayCutout
+        if (displayCutout != null) {
+            val cutoutBounds = RectF()
+            val cutoutPath = displayCutout.cutoutPath
 
-        val dc: DisplayCutout? = window.decorView.rootWindowInsets.displayCutout
-        val rf = RectF()
-        dc!!.cutoutPath!!.computeBounds(rf, true)
-
-        Log.d("TAG123", "" + rf + "; " + window.windowManager.maximumWindowMetrics.bounds)
+            if (cutoutPath != null) {
+                cutoutPath.computeBounds(cutoutBounds, true)
+                screenDataRepository.displayCutout = cutoutBounds.toDisplayCutout()
+                Log.d(TAG, "Cutout: ${screenDataRepository.displayCutout}")
+            } else {
+                Log.e(TAG, "There is no display cutout path")
+            }
+        } else {
+            Log.e(TAG, "There is no display cutout")
+        }
     }
 }

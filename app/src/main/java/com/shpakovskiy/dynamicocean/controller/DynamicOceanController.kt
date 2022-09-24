@@ -1,23 +1,21 @@
 package com.shpakovskiy.dynamicocean.controller
 
-import android.util.Log
 import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 interface GameListener {
-    // fun createField(width: Int, height: Int)
-    // fun startGame()
-
-    // fun moveObject(x: Float, y: Float)
     fun xMove(x: Float)
     fun yMove(y: Float)
     fun createOcean()
     fun destroyOcean()
+    fun initGameField(posX: Int, posY: Int, defaultWidth: Int, defaultHeight: Int)
 }
 
 interface GameController {
     fun startGame()
     fun moveRequest(x: Float, y: Float)
+    fun initGameField()
 }
 
 data class MovingObject(
@@ -31,13 +29,26 @@ class DynamicOceanController(
     private val gameListener: GameListener,
     private val screenDataRepository: ScreenDataRepository
 ) : GameController {
-    companion object {
-        private const val EXPANDED_FIELD_SIZE = 500
+    private val expandedOceanSize = screenDataRepository.screenWidth / 2
+    private val displayCutout = screenDataRepository.displayCutout
+
+    private var movingObject = MovingObject(
+        0F,
+        0F,
+        screenDataRepository.displayCutout?.width!!.toInt(),
+        screenDataRepository.displayCutout?.height!!.toInt()
+    )
+
+    override fun initGameField() {
+        displayCutout?.let {
+            gameListener.initGameField(
+                posX = (displayCutout.left / 2).roundToInt(),
+                posY = -135 + (displayCutout.top / 2).roundToInt(),
+                defaultWidth = (displayCutout.width + displayCutout.left).roundToInt(),
+                defaultHeight = (displayCutout.height + displayCutout.top).roundToInt()
+            )
+        }
     }
-
-    private var movingObject = MovingObject(0F, 0F, 80, 80)
-
-    // override fun initGame() { }
 
     override fun startGame() {
         gameListener.createOcean()
@@ -57,10 +68,10 @@ class DynamicOceanController(
                 // xMove = -movingObject.x
                 gameListener.xMove(0F)
                 movingObject = movingObject.copy(x = 0F)
-            } else if (movingObject.x + movingObject.width + xMove > EXPANDED_FIELD_SIZE) {
-                gameListener.xMove(EXPANDED_FIELD_SIZE.toFloat() - movingObject.width)
+            } else if (movingObject.x + movingObject.width + xMove > expandedOceanSize) {
+                gameListener.xMove(expandedOceanSize.toFloat() - movingObject.width)
                 movingObject =
-                    movingObject.copy(x = EXPANDED_FIELD_SIZE.toFloat() - movingObject.width)
+                    movingObject.copy(x = expandedOceanSize.toFloat() - movingObject.width)
             } else {
                 gameListener.xMove(movingObject.x + xMove)
                 movingObject = movingObject.copy(x = movingObject.x + xMove)
@@ -70,10 +81,10 @@ class DynamicOceanController(
                 // yMove = movingObject.y
                 gameListener.yMove(0F)
                 movingObject = movingObject.copy(y = 0F)
-            } else if (movingObject.y + movingObject.height + yMove > EXPANDED_FIELD_SIZE) {
-                gameListener.yMove(EXPANDED_FIELD_SIZE.toFloat() - movingObject.height)
+            } else if (movingObject.y + movingObject.height + yMove > expandedOceanSize) {
+                gameListener.yMove(expandedOceanSize.toFloat() - movingObject.height)
                 movingObject =
-                    movingObject.copy(y = EXPANDED_FIELD_SIZE.toFloat() - movingObject.height)
+                    movingObject.copy(y = expandedOceanSize.toFloat() - movingObject.height)
             } else {
                 gameListener.yMove(movingObject.y + yMove)
                 movingObject = movingObject.copy(y = movingObject.y + yMove)
