@@ -15,6 +15,7 @@ import androidx.core.app.NotificationCompat
 import com.shpakovskiy.dynamicocean.R
 import com.shpakovskiy.dynamicocean.controller.GameController
 import com.shpakovskiy.dynamicocean.controller.DynamicOceanController
+import com.shpakovskiy.dynamicocean.repository.DeviceScreenDataRepository
 import com.shpakovskiy.dynamicocean.view.DynamicOcean
 
 class DynamicOceanService : Service() {
@@ -88,7 +89,11 @@ class DynamicOceanService : Service() {
 
         startForegroundService()
 
-        gameController = DynamicOceanController(DynamicOcean(this))
+        gameController = DynamicOceanController(
+            gameListener = DynamicOcean(this),
+            screenDataRepository = DeviceScreenDataRepository(this)
+        )
+
         gameController.startGame()
     }
 

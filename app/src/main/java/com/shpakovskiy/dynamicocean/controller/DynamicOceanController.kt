@@ -1,6 +1,7 @@
 package com.shpakovskiy.dynamicocean.controller
 
 import android.util.Log
+import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
 import kotlin.math.abs
 
 interface GameListener {
@@ -26,7 +27,10 @@ data class MovingObject(
     val height: Int
 )
 
-class DynamicOceanController(private val gameListener: GameListener) : GameController {
+class DynamicOceanController(
+    private val gameListener: GameListener,
+    private val screenDataRepository: ScreenDataRepository
+) : GameController {
     companion object {
         private const val EXPANDED_FIELD_SIZE = 500
     }
@@ -45,7 +49,7 @@ class DynamicOceanController(private val gameListener: GameListener) : GameContr
         val xMove = x * kk
         val yMove = y * kk
 
-        Log.d("TAG123", "${abs(movingObject.x - 20F)}; ${abs(movingObject.y - 20F)}")
+        // Log.d("TAG123", "${abs(movingObject.x - 20F)}; ${abs(movingObject.y - 20F)}")
         if (abs(movingObject.x - 20F) < 2.5 && abs(movingObject.y - 20F) < 2.5) {
             gameListener.destroyOcean()
         } else {

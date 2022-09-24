@@ -5,15 +5,21 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.DisplayCutout
 import androidx.appcompat.app.AppCompatActivity
+import com.shpakovskiy.dynamicocean.repository.DeviceScreenDataRepository
+import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
 import com.shpakovskiy.dynamicocean.service.DynamicOceanService
 
-
 class MainActivity : AppCompatActivity() {
+    private lateinit var screenDataRepository: ScreenDataRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
+
+        screenDataRepository = DeviceScreenDataRepository(applicationContext)
+
         checkOverlayPermission()
     }
 
@@ -36,9 +42,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onAttachedToWindow() {
-        val dc = window.decorView.rootWindowInsets.displayCutout
+        screenDataRepository.screenWidth = window.windowManager.maximumWindowMetrics.bounds.right
+        screenDataRepository.screenHeight = window.windowManager.maximumWindowMetrics.bounds.bottom
+
+        Log.d("TAG123", "[${screenDataRepository.screenHeight}; ${screenDataRepository.screenWidth}]")
+
+        val dc: DisplayCutout? = window.decorView.rootWindowInsets.displayCutout
         val rf = RectF()
         dc!!.cutoutPath!!.computeBounds(rf, true)
-        Log.d("TAG123", "" + rf)
+
+        Log.d("TAG123", "" + rf + "; " + window.windowManager.maximumWindowMetrics.bounds)
     }
 }
