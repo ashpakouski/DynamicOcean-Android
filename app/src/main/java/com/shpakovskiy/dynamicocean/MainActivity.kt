@@ -5,6 +5,7 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
 import com.shpakovskiy.dynamicocean.model.DeviceScreen
@@ -27,12 +28,16 @@ class MainActivity : AppCompatActivity() {
         screenDataRepository = DeviceScreenDataRepository(applicationContext)
 
         checkOverlayPermission()
+
+        findViewById<View>(R.id.ocean_launcher_button).setOnClickListener {
+            startService()
+        }
     }
 
     override fun onResume() {
         super.onResume()
 
-        startService()
+        // startService()
     }
 
     private fun startService() {

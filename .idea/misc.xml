@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_award.xml" value="0.15" />
+        <entry key="app/src/main/res/drawable/rounded_button.xml" value="0.15" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.14114583333333333" />
         <entry key="app/src/main/res/layout/dynamic_ocean.xml" value="0.1" />
       </map>
