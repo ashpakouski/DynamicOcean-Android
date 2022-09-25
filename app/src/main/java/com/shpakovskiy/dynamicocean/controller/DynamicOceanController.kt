@@ -25,6 +25,12 @@ interface GameController {
     fun finishGame()
 
     fun moveRequest(x: Float, y: Float)
+
+    fun setLifecycleObserver(lifecycleObserver: ControllerLifecycleObserver)
+}
+
+interface ControllerLifecycleObserver {
+    fun onDestroy()
 }
 
 class DynamicOceanController(
@@ -49,8 +55,9 @@ class DynamicOceanController(
 
     private val expandedFieldSide =
         (deviceScreen.width / 2 + displayCutout.width + displayCutout.left).roundToInt()
-
     private var gameStartMillis = 0L
+
+    private var lifecycleObserver: ControllerLifecycleObserver? = null
 
     override fun createGameField() {
         gameListener.createGameField(
@@ -74,6 +81,7 @@ class DynamicOceanController(
     override fun finishGame() {
         val gameTime = System.currentTimeMillis() - gameStartMillis
         Log.d("TAG123", "It took: ${gameTime / 1000.0} seconds")
+        lifecycleObserver?.onDestroy()
         gameListener.destroyGameField()
     }
 
@@ -108,5 +116,9 @@ class DynamicOceanController(
                 gameObject = gameObject.copy(y = gameObject.y + yMove)
             }
         }
+    }
+
+    override fun setLifecycleObserver(lifecycleObserver: ControllerLifecycleObserver) {
+        this.lifecycleObserver = lifecycleObserver
     }
 }

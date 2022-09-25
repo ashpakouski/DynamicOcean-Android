@@ -13,6 +13,7 @@ import android.hardware.SensorManager
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.shpakovskiy.dynamicocean.R
+import com.shpakovskiy.dynamicocean.controller.ControllerLifecycleObserver
 import com.shpakovskiy.dynamicocean.controller.GameController
 import com.shpakovskiy.dynamicocean.controller.DynamicOceanController
 import com.shpakovskiy.dynamicocean.repository.DeviceScreenDataRepository
@@ -66,11 +67,17 @@ class DynamicOceanService : Service() {
 //                serialShakes = 0
 //            }
 
-            //fieldController?.moveTo(-1 * event.values[0], event.values[1])
             gameController.moveRequest(-1 * event.values[0], event.values[1])
         }
 
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) = Unit
+    }
+
+    private val controllerLifecycleObserver = object : ControllerLifecycleObserver {
+        override fun onDestroy() {
+            unregisterAccelerometerListener()
+            stopSelf()
+        }
     }
 
     override fun onCreate() {
@@ -84,6 +91,7 @@ class DynamicOceanService : Service() {
             screenDataRepository = DeviceScreenDataRepository(this)
         )
 
+        gameController.setLifecycleObserver(controllerLifecycleObserver)
         gameController.createGameField()
         gameController.startGame()
     }
@@ -98,6 +106,10 @@ class DynamicOceanService : Service() {
                 SensorManager.SENSOR_DELAY_NORMAL
             )
         }
+    }
+
+    private fun unregisterAccelerometerListener() {
+        sensorManager?.unregisterListener(accelerometerListener)
     }
 
     private fun startForegroundService() {
