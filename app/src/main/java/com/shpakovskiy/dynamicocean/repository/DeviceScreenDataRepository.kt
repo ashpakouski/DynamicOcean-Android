@@ -3,31 +3,29 @@ package com.shpakovskiy.dynamicocean.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.shpakovskiy.dynamicocean.model.DeviceScreen
 import com.shpakovskiy.dynamicocean.model.DisplayCutout
 
 class DeviceScreenDataRepository(context: Context) : ScreenDataRepository {
     companion object {
-        private const val SCREEN_WIDTH = "screen_width"
-        private const val SCREEN_HEIGHT = "screen_height"
+        private const val DYNAMIC_OCEAN = "dynamic_ocean"
+        private const val DEVICE_SCREEN = "device_screen"
         private const val DISPLAY_CUTOUT = "display_cutout"
     }
 
     private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("dynamic_ocean", Context.MODE_PRIVATE)
+        context.getSharedPreferences(DYNAMIC_OCEAN, Context.MODE_PRIVATE)
 
-    override var screenWidth: Int
-        get() = sharedPreferences.getInt(SCREEN_WIDTH, -1)
-        set(width) {
-            val editor = sharedPreferences.edit()
-            editor.putInt(SCREEN_WIDTH, width)
-            editor.apply()
+    override var deviceScreen: DeviceScreen?
+        get() {
+            sharedPreferences.getString(DEVICE_SCREEN, null)?.let {
+                return Gson().fromJson(it, DeviceScreen::class.java)
+            }
+            return null
         }
-
-    override var screenHeight: Int
-        get() = sharedPreferences.getInt(SCREEN_HEIGHT, -1)
-        set(height) {
+        set(screen) {
             val editor = sharedPreferences.edit()
-            editor.putInt(SCREEN_HEIGHT, height)
+            editor.putString(DEVICE_SCREEN, Gson().toJson(screen))
             editor.apply()
         }
 
@@ -43,5 +41,4 @@ class DeviceScreenDataRepository(context: Context) : ScreenDataRepository {
             editor.putString(DISPLAY_CUTOUT, Gson().toJson(cutout))
             editor.apply()
         }
-
 }

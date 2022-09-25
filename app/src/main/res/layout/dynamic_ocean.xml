@@ -24,7 +24,7 @@
             android:id="@+id/game_object"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:contentDescription="Golf ball"
-            android:src="@drawable/blowfish" />
+            android:contentDescription="Blowfish"
+            android:src="@drawable/blowfish_stretched" />
     </com.shpakovskiy.dynamicocean.view.ExpandableCard>
 </LinearLayout>

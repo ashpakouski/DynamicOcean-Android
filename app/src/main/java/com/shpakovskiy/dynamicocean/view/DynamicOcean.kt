@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import com.shpakovskiy.dynamicocean.R
 import com.shpakovskiy.dynamicocean.controller.GameListener
+import com.shpakovskiy.dynamicocean.model.GameObject
 import com.shpakovskiy.dynamicocean.service.DynamicOceanService
 
 class DynamicOcean(private val context: Context) : GameListener {
@@ -65,12 +66,12 @@ class DynamicOcean(private val context: Context) : GameListener {
         }
     }
 
-    override fun putGameObject(x: Int, y: Int, width: Int, height: Int) {
+    override fun putGameObject(gameObjectParams: GameObject) {
         gameObject = rootView?.findViewById(R.id.game_object)
-        gameObject?.x = x.toFloat()
-        gameObject?.y = y.toFloat()
-        gameObject?.layoutParams?.width = width
-        gameObject?.layoutParams?.height = width
+        gameObject?.x = gameObjectParams.x
+        gameObject?.y = gameObjectParams.y
+        gameObject?.layoutParams?.width = gameObjectParams.width
+        gameObject?.layoutParams?.height = gameObjectParams.height
     }
 
     /*
@@ -104,7 +105,7 @@ class DynamicOcean(private val context: Context) : GameListener {
     }
      */
 
-    override fun destroyOcean() {
+    override fun destroyGameField() {
         context.stopService(Intent(context, DynamicOceanService::class.java))
         destroy()
     }

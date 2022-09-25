@@ -84,7 +84,7 @@ class DynamicOceanService : Service() {
             screenDataRepository = DeviceScreenDataRepository(this)
         )
 
-        gameController.initGameField()
+        gameController.createGameField()
         gameController.startGame()
     }
 

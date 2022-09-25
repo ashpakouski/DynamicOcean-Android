@@ -1,71 +1,80 @@
 package com.shpakovskiy.dynamicocean.controller
 
+import android.util.Log
+import com.shpakovskiy.dynamicocean.model.DeviceScreen
+import com.shpakovskiy.dynamicocean.model.DisplayCutout
+import com.shpakovskiy.dynamicocean.model.GameObject
 import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
 interface GameListener {
-    fun xMove(x: Float)
-    fun yMove(y: Float)
-    fun destroyOcean()
-
     fun createGameField(x: Int, y: Int, defaultWidth: Int, defaultHeight: Int)
     fun resizeGameField(width: Int, height: Int, onDone: () -> Unit)
+    fun destroyGameField()
 
-    fun putGameObject(x: Int, y: Int, width: Int, height: Int)
+    fun putGameObject(gameObject: GameObject)
+
+    fun xMove(x: Float)
+    fun yMove(y: Float)
 }
 
 interface GameController {
+    fun createGameField()
     fun startGame()
-    fun moveRequest(x: Float, y: Float)
-    fun initGameField()
-}
+    fun finishGame()
 
-data class MovingObject(
-    val x: Float,
-    val y: Float,
-    val width: Int,
-    val height: Int
-)
+    fun moveRequest(x: Float, y: Float)
+}
 
 class DynamicOceanController(
     private val gameListener: GameListener,
-    private val screenDataRepository: ScreenDataRepository
+    screenDataRepository: ScreenDataRepository
 ) : GameController {
-    private val expandedOceanSize = screenDataRepository.screenWidth / 2
-    private val displayCutout = screenDataRepository.displayCutout
+    private val displayCutout: DisplayCutout
+    private val deviceScreen: DeviceScreen
 
-    private var movingObject = MovingObject(
-        0F,
-        0F,
-        screenDataRepository.displayCutout?.width!!.toInt(),
-        screenDataRepository.displayCutout?.height!!.toInt()
+    init {
+        displayCutout = screenDataRepository.displayCutout
+            ?: throw RuntimeException("Display cutout should not be null")
+        deviceScreen = screenDataRepository.deviceScreen
+            ?: throw RuntimeException("Device screen should not be null")
+    }
+
+    private var gameObject = GameObject(
+        200F, 200F,
+        displayCutout.width.roundToInt(),
+        displayCutout.height.roundToInt()
     )
 
-    override fun initGameField() {
-        displayCutout?.let {
-            gameListener.createGameField(
-                x = (displayCutout.left / 2).roundToInt(),
-                y = -135 + (displayCutout.top / 2).roundToInt(),
-                defaultWidth = (displayCutout.width + displayCutout.left).roundToInt(),
-                defaultHeight = (displayCutout.height + displayCutout.top).roundToInt()
-            )
-        }
+    private val expandedFieldSide =
+        (deviceScreen.width / 2 + displayCutout.width + displayCutout.left).roundToInt()
+
+    private var gameStartMillis = 0L
+
+    override fun createGameField() {
+        gameListener.createGameField(
+            x = (displayCutout.left / 2).roundToInt(),
+            y = -135 + (displayCutout.top / 2).roundToInt(),
+            defaultWidth = (displayCutout.width + displayCutout.left).roundToInt(),
+            defaultHeight = (displayCutout.height + displayCutout.top).roundToInt()
+        )
     }
 
     override fun startGame() {
-        displayCutout?.let {
-            gameListener.resizeGameField(
-                width = (screenDataRepository.screenWidth / 2 + displayCutout.width + displayCutout.left).roundToInt(),
-                height = (screenDataRepository.screenWidth / 2 + displayCutout.width + displayCutout.left).roundToInt()
-            ) {
-                gameListener.putGameObject(
-                    200, 200,
-                    displayCutout.width.roundToInt(),
-                    displayCutout.height.roundToInt()
-                )
-            }
+        gameListener.resizeGameField(
+            width = expandedFieldSide,
+            height = expandedFieldSide
+        ) {
+            gameListener.putGameObject(gameObject)
+            gameStartMillis = System.currentTimeMillis()
         }
+    }
+
+    override fun finishGame() {
+        val gameTime = System.currentTimeMillis() - gameStartMillis
+        Log.d("TAG123", "It took: ${gameTime / 1000.0} seconds")
+        gameListener.destroyGameField()
     }
 
     override fun moveRequest(x: Float, y: Float) {
@@ -74,34 +83,29 @@ class DynamicOceanController(
         val xMove = x * kk
         val yMove = y * kk
 
-        // Log.d("TAG123", "${abs(movingObject.x - 20F)}; ${abs(movingObject.y - 20F)}")
-        if (abs(movingObject.x - 20F) < 2.5 && abs(movingObject.y - 20F) < 2.5) {
-            gameListener.destroyOcean()
+        if (abs(gameObject.x - displayCutout.left / 2) < 2.5 && abs(gameObject.y - displayCutout.top / 2) < 2.5) {
+            finishGame()
         } else {
-            if (movingObject.x + xMove <= 0) {
-                // xMove = -movingObject.x
+            if (gameObject.x + xMove <= 0) {
                 gameListener.xMove(0F)
-                movingObject = movingObject.copy(x = 0F)
-            } else if (movingObject.x + movingObject.width + xMove > expandedOceanSize) {
-                gameListener.xMove(expandedOceanSize.toFloat() - movingObject.width)
-                movingObject =
-                    movingObject.copy(x = expandedOceanSize.toFloat() - movingObject.width)
+                gameObject = gameObject.copy(x = 0F)
+            } else if (gameObject.x + gameObject.width + xMove >= expandedFieldSide) {
+                gameListener.xMove(expandedFieldSide.toFloat() - gameObject.width)
+                gameObject = gameObject.copy(x = expandedFieldSide.toFloat() - gameObject.width)
             } else {
-                gameListener.xMove(movingObject.x + xMove)
-                movingObject = movingObject.copy(x = movingObject.x + xMove)
+                gameListener.xMove(gameObject.x + xMove)
+                gameObject = gameObject.copy(x = gameObject.x + xMove)
             }
 
-            if (movingObject.y + yMove <= 0) {
-                // yMove = movingObject.y
+            if (gameObject.y + yMove <= 0) {
                 gameListener.yMove(0F)
-                movingObject = movingObject.copy(y = 0F)
-            } else if (movingObject.y + movingObject.height + yMove > expandedOceanSize) {
-                gameListener.yMove(expandedOceanSize.toFloat() - movingObject.height)
-                movingObject =
-                    movingObject.copy(y = expandedOceanSize.toFloat() - movingObject.height)
+                gameObject = gameObject.copy(y = 0F)
+            } else if (gameObject.y + gameObject.height + yMove > expandedFieldSide) {
+                gameListener.yMove(expandedFieldSide.toFloat() - gameObject.height)
+                gameObject = gameObject.copy(y = expandedFieldSide.toFloat() - gameObject.height)
             } else {
-                gameListener.yMove(movingObject.y + yMove)
-                movingObject = movingObject.copy(y = movingObject.y + yMove)
+                gameListener.yMove(gameObject.y + yMove)
+                gameObject = gameObject.copy(y = gameObject.y + yMove)
             }
         }
     }

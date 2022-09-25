@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.shpakovskiy.dynamicocean.model.DeviceScreen
 import com.shpakovskiy.dynamicocean.model.toDisplayCutout
 import com.shpakovskiy.dynamicocean.repository.DeviceScreenDataRepository
 import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
@@ -47,8 +48,10 @@ class MainActivity : AppCompatActivity() {
 
     // TODO: Handle cases, when device doesn't have any cutouts
     override fun onAttachedToWindow() {
-        screenDataRepository.screenWidth = window.windowManager.maximumWindowMetrics.bounds.right
-        screenDataRepository.screenHeight = window.windowManager.maximumWindowMetrics.bounds.bottom
+        screenDataRepository.deviceScreen = DeviceScreen(
+            width = window.windowManager.maximumWindowMetrics.bounds.right,
+            height = window.windowManager.maximumWindowMetrics.bounds.bottom
+        )
 
         val displayCutout = window.decorView.rootWindowInsets.displayCutout
         if (displayCutout != null) {
