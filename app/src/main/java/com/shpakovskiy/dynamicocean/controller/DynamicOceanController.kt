@@ -9,23 +9,27 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 interface GameListener {
+    // Game field
     fun createGameField(x: Int, y: Int, defaultWidth: Int, defaultHeight: Int)
-    fun resizeGameField(width: Int, height: Int, onDone: () -> Unit)
+    fun resizeGameField(width: Int, height: Int, onDone: (() -> Unit)? = null)
     fun destroyGameField()
 
+    // Game object
     fun putGameObject(gameObject: GameObject)
-
-    fun xMove(x: Float)
-    fun yMove(y: Float)
+    fun replaceObject(gameObject: GameObject)
 }
 
 interface GameController {
+    // Game field
     fun createGameField()
     fun startGame()
     fun finishGame()
+    fun destroyGameField()
 
+    // Game object
     fun moveRequest(x: Float, y: Float)
 
+    // Util
     fun setLifecycleObserver(lifecycleObserver: ControllerLifecycleObserver)
 }
 
@@ -62,7 +66,7 @@ class DynamicOceanController(
     override fun createGameField() {
         gameListener.createGameField(
             x = (displayCutout.left / 2).roundToInt(),
-            y = -135 + (displayCutout.top / 2).roundToInt(),
+            y = (displayCutout.top / 2).roundToInt() - deviceScreen.statusBarHeight,
             defaultWidth = (displayCutout.width + displayCutout.left).roundToInt(),
             defaultHeight = (displayCutout.height + displayCutout.top).roundToInt()
         )
@@ -73,6 +77,7 @@ class DynamicOceanController(
             width = expandedFieldSide,
             height = expandedFieldSide
         ) {
+            gameObject = gameObject.randomizePosition()
             gameListener.putGameObject(gameObject)
             gameStartMillis = System.currentTimeMillis()
         }
@@ -81,44 +86,55 @@ class DynamicOceanController(
     override fun finishGame() {
         val gameTime = System.currentTimeMillis() - gameStartMillis
         Log.d("TAG123", "It took: ${gameTime / 1000.0} seconds")
+        destroyGameField()
+    }
+
+    override fun destroyGameField() {
         lifecycleObserver?.onDestroy()
-        gameListener.destroyGameField()
+        gameListener.resizeGameField(
+            height = (displayCutout.width + displayCutout.left).roundToInt(),
+            width = (displayCutout.width + displayCutout.left).roundToInt()
+        ) {
+            gameListener.destroyGameField()
+        }
     }
 
     override fun moveRequest(x: Float, y: Float) {
-        val kk = 10
-
-        val xMove = x * kk
-        val yMove = y * kk
+        val acceleration = 10
+        val xMove = x * acceleration
+        val yMove = y * acceleration
 
         if (abs(gameObject.x - displayCutout.left / 2) < 2.5 && abs(gameObject.y - displayCutout.top / 2) < 2.5) {
             finishGame()
         } else {
-            if (gameObject.x + xMove <= 0) {
-                gameListener.xMove(0F)
-                gameObject = gameObject.copy(x = 0F)
+            gameObject = if (gameObject.x + xMove <= 0) {
+                gameObject.copy(x = 0F)
             } else if (gameObject.x + gameObject.width + xMove >= expandedFieldSide) {
-                gameListener.xMove(expandedFieldSide.toFloat() - gameObject.width)
-                gameObject = gameObject.copy(x = expandedFieldSide.toFloat() - gameObject.width)
+                gameObject.copy(x = expandedFieldSide.toFloat() - gameObject.width)
             } else {
-                gameListener.xMove(gameObject.x + xMove)
-                gameObject = gameObject.copy(x = gameObject.x + xMove)
+                gameObject.copy(x = gameObject.x + xMove)
             }
 
-            if (gameObject.y + yMove <= 0) {
-                gameListener.yMove(0F)
-                gameObject = gameObject.copy(y = 0F)
+            gameObject = if (gameObject.y + yMove <= 0) {
+                gameObject.copy(y = 0F)
             } else if (gameObject.y + gameObject.height + yMove > expandedFieldSide) {
-                gameListener.yMove(expandedFieldSide.toFloat() - gameObject.height)
-                gameObject = gameObject.copy(y = expandedFieldSide.toFloat() - gameObject.height)
+                gameObject.copy(y = expandedFieldSide.toFloat() - gameObject.height)
             } else {
-                gameListener.yMove(gameObject.y + yMove)
-                gameObject = gameObject.copy(y = gameObject.y + yMove)
+                gameObject.copy(y = gameObject.y + yMove)
             }
+
+            gameListener.replaceObject(gameObject)
         }
     }
 
     override fun setLifecycleObserver(lifecycleObserver: ControllerLifecycleObserver) {
         this.lifecycleObserver = lifecycleObserver
+    }
+
+    private fun GameObject.randomizePosition(): GameObject {
+        return this.copy(
+            x = (0 until (expandedFieldSide - gameObject.width)).shuffled().last().toFloat(),
+            y = (0 until (expandedFieldSide - gameObject.height)).shuffled().last().toFloat(),
+        )
     }
 }

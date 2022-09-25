@@ -5,6 +5,7 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
 import com.shpakovskiy.dynamicocean.model.DeviceScreen
 import com.shpakovskiy.dynamicocean.model.toDisplayCutout
@@ -50,7 +51,10 @@ class MainActivity : AppCompatActivity() {
     override fun onAttachedToWindow() {
         screenDataRepository.deviceScreen = DeviceScreen(
             width = window.windowManager.maximumWindowMetrics.bounds.right,
-            height = window.windowManager.maximumWindowMetrics.bounds.bottom
+            height = window.windowManager.maximumWindowMetrics.bounds.bottom,
+            statusBarHeight = window.decorView.rootWindowInsets.getInsetsIgnoringVisibility(
+                WindowInsets.Type.systemBars()
+            ).top
         )
 
         val displayCutout = window.decorView.rootWindowInsets.displayCutout
@@ -61,7 +65,6 @@ class MainActivity : AppCompatActivity() {
             if (cutoutPath != null) {
                 cutoutPath.computeBounds(cutoutBounds, true)
                 screenDataRepository.displayCutout = cutoutBounds.toDisplayCutout()
-                Log.d(TAG, "Cutout: ${screenDataRepository.displayCutout}")
             } else {
                 Log.e(TAG, "There is no display cutout path")
             }

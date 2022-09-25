@@ -17,15 +17,12 @@ import com.shpakovskiy.dynamicocean.service.DynamicOceanService
 class DynamicOcean(private val context: Context) : GameListener {
     companion object {
         private const val TAG = "DynamicOcean"
-        private const val EXPANDED_FIELD_SIZE = 500
-        private const val COLLAPSED_FIELD_SIZE = 120
-        private const val BALL_SIZE = 80
     }
 
     private var rootView: View? = null
     private var rootViewParams: WindowManager.LayoutParams? = null
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private var gameObject: ImageView? = null
+    private var movingObject: ImageView? = null
     private var gameField: ExpandableCard? = null
 
     override fun createGameField(x: Int, y: Int, defaultWidth: Int, defaultHeight: Int) {
@@ -57,53 +54,19 @@ class DynamicOcean(private val context: Context) : GameListener {
         }
     }
 
-    override fun resizeGameField(width: Int, height: Int, onDone: () -> Unit) {
-        val w = if (width > gameField!!.width) width else width
-        val h = if (height > gameField!!.height) height else -height
-
-        gameField?.resize(w, h) {
-            onDone()
+    override fun resizeGameField(width: Int, height: Int, onDone: (() -> Unit)?) {
+        gameField?.resize(width, height) {
+            onDone?.invoke()
         }
     }
 
-    override fun putGameObject(gameObjectParams: GameObject) {
-        gameObject = rootView?.findViewById(R.id.game_object)
-        gameObject?.x = gameObjectParams.x
-        gameObject?.y = gameObjectParams.y
-        gameObject?.layoutParams?.width = gameObjectParams.width
-        gameObject?.layoutParams?.height = gameObjectParams.height
+    override fun putGameObject(gameObject: GameObject) {
+        movingObject = rootView?.findViewById(R.id.game_object)
+        movingObject?.x = gameObject.x
+        movingObject?.y = gameObject.y
+        movingObject?.layoutParams?.width = gameObject.width
+        movingObject?.layoutParams?.height = gameObject.height
     }
-
-    /*
-    init {
-        // Root view
-        rootViewParams = WindowManager.LayoutParams(
-            EXPANDED_FIELD_SIZE,
-            EXPANDED_FIELD_SIZE,
-            0 + FIELD_MARGIN, -135 + FIELD_MARGIN,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            PixelFormat.TRANSLUCENT
-        )
-        rootViewParams?.gravity = Gravity.TOP or Gravity.START
-
-        val layoutInflater =
-            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        rootView = layoutInflater.inflate(R.layout.dynamic_ocean, null)
-
-        //Game field
-        gameField = rootView.findViewById(R.id.game_field)
-        gameField.layoutParams.width = COLLAPSED_FIELD_SIZE
-        gameField.layoutParams.height = COLLAPSED_FIELD_SIZE
-
-        // Moving object
-        movingObject = rootView.findViewById(R.id.moving_object)
-        movingObject.layoutParams.width = BALL_SIZE
-        movingObject.layoutParams.height = BALL_SIZE
-        movingObject.x = 0F
-        movingObject.y = 0F
-    }
-     */
 
     override fun destroyGameField() {
         context.stopService(Intent(context, DynamicOceanService::class.java))
@@ -112,27 +75,21 @@ class DynamicOcean(private val context: Context) : GameListener {
 
     private fun destroy() {
         try {
-            gameField?.resize(COLLAPSED_FIELD_SIZE, COLLAPSED_FIELD_SIZE) {
-                windowManager.removeView(rootView)
-                rootView?.invalidate()
-            }
+            windowManager.removeView(rootView)
+            rootView?.invalidate()
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    override fun xMove(x: Float) {
-        gameObject?.let {
-            ObjectAnimator.ofFloat(gameObject, View.X, x).apply {
+    override fun replaceObject(gameObject: GameObject) {
+        movingObject?.let {
+            ObjectAnimator.ofFloat(movingObject, View.X, gameObject.x).apply {
                 duration = 250
                 start()
             }
-        }
-    }
 
-    override fun yMove(y: Float) {
-        gameObject?.let {
-            ObjectAnimator.ofFloat(gameObject, View.Y, y).apply {
+            ObjectAnimator.ofFloat(movingObject, View.Y, gameObject.y).apply {
                 duration = 250
                 start()
             }
