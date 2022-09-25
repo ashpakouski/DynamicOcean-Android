@@ -24,6 +24,9 @@ class DynamicOceanService : Service() {
         private const val NOTIFICATION_CHANNEL_ID = "com.shpakovskiy.dynamicfield"
         private const val NOTIFICATION_CHANNEL_NAME = "Dynamic ocean service"
         // private const val STABILIZATION_CYCLES = 10
+
+        // Well, I didn't want it, but I'm gonna give it a chance for now
+        var isRunning = false
     }
 
     private var sensorManager: SensorManager? = null
@@ -83,6 +86,8 @@ class DynamicOceanService : Service() {
     override fun onCreate() {
         super.onCreate()
 
+        isRunning = true
+
         startForegroundService()
         registerAccelerometerListener()
 
@@ -136,5 +141,10 @@ class DynamicOceanService : Service() {
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isRunning = false
     }
 }
