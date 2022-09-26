@@ -68,9 +68,10 @@
                     android:textSize="24sp" />
 
                 <TextView
+                    android:id="@+id/best_time_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="6.294s"
+                    android:text="*.***s"
                     android:textColor="@color/text_color"
                     android:textSize="28sp" />
             </LinearLayout>

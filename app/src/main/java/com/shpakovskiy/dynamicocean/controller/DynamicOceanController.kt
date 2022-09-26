@@ -2,6 +2,7 @@ package com.shpakovskiy.dynamicocean.controller
 
 import android.util.Log
 import com.shpakovskiy.dynamicocean.model.*
+import com.shpakovskiy.dynamicocean.repository.GameStatRepository
 import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -37,7 +38,8 @@ interface ControllerLifecycleObserver {
 
 class DynamicOceanController(
     private val gameListener: GameListener,
-    screenDataRepository: ScreenDataRepository
+    screenDataRepository: ScreenDataRepository,
+    private val gameStatRepository: GameStatRepository
 ) : GameController {
     private var gameObject: GameObject
     private var gameField: GameField
@@ -103,7 +105,10 @@ class DynamicOceanController(
 
     override fun finishGame() {
         val gameTime = System.currentTimeMillis() - gameStartMillis
-        Log.d("TAG123", "It took: ${gameTime / 1000.0} seconds")
+        if (gameTime < gameStatRepository.bestAttemptTime) {
+            gameStatRepository.bestAttemptTime = gameTime
+        }
+
         destroyGameField()
     }
 

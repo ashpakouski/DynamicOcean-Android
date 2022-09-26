@@ -17,6 +17,7 @@ import com.shpakovskiy.dynamicocean.controller.ControllerLifecycleObserver
 import com.shpakovskiy.dynamicocean.controller.GameController
 import com.shpakovskiy.dynamicocean.controller.DynamicOceanController
 import com.shpakovskiy.dynamicocean.repository.DeviceScreenDataRepository
+import com.shpakovskiy.dynamicocean.repository.OceanGameStatRepository
 import com.shpakovskiy.dynamicocean.view.DynamicOcean
 
 class DynamicOceanService : Service() {
@@ -93,7 +94,8 @@ class DynamicOceanService : Service() {
 
         gameController = DynamicOceanController(
             gameListener = DynamicOcean(applicationContext),
-            screenDataRepository = DeviceScreenDataRepository(applicationContext)
+            screenDataRepository = DeviceScreenDataRepository(applicationContext),
+            gameStatRepository = OceanGameStatRepository(applicationContext)
         )
 
         gameController.setLifecycleObserver(controllerLifecycleObserver)
