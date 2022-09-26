@@ -69,7 +69,6 @@ class MainActivity : AppCompatActivity() {
 
             if (cutoutPath != null) {
                 cutoutPath.computeBounds(cutoutBounds, true)
-                Log.d("TAG123", ">>> Cutout: $cutoutBounds")
                 screenDataRepository.displayCutout = cutoutBounds.toDisplayCutout()
             } else {
                 Log.e(TAG, "There is no display cutout path")

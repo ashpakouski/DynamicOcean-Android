@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import com.shpakovskiy.dynamicocean.R
 import com.shpakovskiy.dynamicocean.controller.GameListener
+import com.shpakovskiy.dynamicocean.model.GameField
 import com.shpakovskiy.dynamicocean.model.GameObject
 import com.shpakovskiy.dynamicocean.service.DynamicOceanService
 
@@ -23,14 +24,13 @@ class DynamicOcean(private val context: Context) : GameListener {
     private var rootViewParams: WindowManager.LayoutParams? = null
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var movingObject: ImageView? = null
-    private var gameField: ExpandableCard? = null
-    // private var hole: DebugCircleView? = null
+    private var gameFieldCard: ExpandableCard? = null
 
-    override fun createGameField(x: Int, y: Int, defaultWidth: Int, defaultHeight: Int) {
+    override fun createGameField(gameField: GameField) {
         rootViewParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
-            x, y,
+            gameField.x, gameField.y,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT
@@ -42,16 +42,9 @@ class DynamicOcean(private val context: Context) : GameListener {
         rootView = layoutInflater.inflate(R.layout.dynamic_ocean, null)
 
         //Game field
-        gameField = rootView?.findViewById(R.id.game_field)
-        gameField?.layoutParams?.width = defaultWidth
-        gameField?.layoutParams?.height = defaultHeight
-
-        // Hole
-        // hole = rootView?.findViewById(R.id.hole)
-        // hole?.x = 512.15894F
-        // hole?.y = 0.0F + (87.84109F.roundToInt() - (567.84106F.roundToInt() - 512.15894F.roundToInt()))
-        // hole?.layoutParams?.height = 87.84109F.toInt()
-        // hole?.layoutParams?.width = (567.84106F - 512.15894F).toInt() + 5
+        gameFieldCard = rootView?.findViewById(R.id.game_field)
+        gameFieldCard?.layoutParams?.width = gameField.widthCollapsed
+        gameFieldCard?.layoutParams?.height = gameField.heightCollapsed
 
         try {
             if (rootView?.windowToken == null && rootView?.parent == null) {
@@ -63,7 +56,7 @@ class DynamicOcean(private val context: Context) : GameListener {
     }
 
     override fun resizeGameField(width: Int, height: Int, onDone: (() -> Unit)?) {
-        gameField?.resize(width, height) {
+        gameFieldCard?.resize(width, height) {
             onDone?.invoke()
         }
     }

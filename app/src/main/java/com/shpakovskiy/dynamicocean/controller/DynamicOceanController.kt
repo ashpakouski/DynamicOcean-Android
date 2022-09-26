@@ -8,7 +8,7 @@ import kotlin.math.roundToInt
 
 interface GameListener {
     // Game field
-    fun createGameField(x: Int, y: Int, defaultWidth: Int, defaultHeight: Int)
+    fun createGameField(gameField: GameField)
     fun resizeGameField(width: Int, height: Int, onDone: (() -> Unit)? = null)
     fun destroyGameField()
 
@@ -58,8 +58,8 @@ class DynamicOceanController(
         }
 
         gameField = GameField(
-            x = realCutoutMargin / 2,
-            y = realCutoutMargin / 2 - deviceScreen.statusBarHeight,
+            x = (realCutoutMargin / 2).roundToInt(),
+            y = (realCutoutMargin / 2 - deviceScreen.statusBarHeight).roundToInt(),
             widthCollapsed = (displayCutout.width + realCutoutMargin).roundToInt(),
             heightCollapsed = (displayCutout.height + realCutoutMargin).roundToInt(),
             widthExpanded = (deviceScreen.width / 2 + displayCutout.width / 2).roundToInt(),
@@ -82,31 +82,15 @@ class DynamicOceanController(
         gameObject = gameObject.randomizePosition()
     }
 
-
-//    private var gameObject = GameObject(
-//        200F, 200F,
-//        displayCutout.width.roundToInt(),
-//        displayCutout.height.roundToInt()
-//    )
-//
-//    private val expandedFieldSide =
-//        (deviceScreen.width / 2 + displayCutout.width + displayCutout.top).roundToInt()
-
     private var gameStartMillis = 0L
 
     private var lifecycleObserver: ControllerLifecycleObserver? = null
 
     override fun createGameField() {
-        gameListener.createGameField(
-            x = gameField.x.roundToInt(),
-            y = gameField.y.roundToInt(),
-            defaultWidth = gameField.widthCollapsed,
-            defaultHeight = gameField.heightCollapsed
-        )
+        gameListener.createGameField(gameField)
     }
 
     override fun startGame() {
-        // Log.d("TAG123", "ExpandedFieldSize: $expandedFieldSide")
         gameListener.resizeGameField(
             width = gameField.widthExpanded,
             height = gameField.heightExpanded
