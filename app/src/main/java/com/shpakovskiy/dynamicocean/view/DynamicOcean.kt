@@ -24,6 +24,7 @@ class DynamicOcean(private val context: Context) : GameListener {
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var movingObject: ImageView? = null
     private var gameField: ExpandableCard? = null
+    // private var hole: DebugCircleView? = null
 
     override fun createGameField(x: Int, y: Int, defaultWidth: Int, defaultHeight: Int) {
         rootViewParams = WindowManager.LayoutParams(
@@ -44,6 +45,13 @@ class DynamicOcean(private val context: Context) : GameListener {
         gameField = rootView?.findViewById(R.id.game_field)
         gameField?.layoutParams?.width = defaultWidth
         gameField?.layoutParams?.height = defaultHeight
+
+        // Hole
+        // hole = rootView?.findViewById(R.id.hole)
+        // hole?.x = 512.15894F
+        // hole?.y = 0.0F + (87.84109F.roundToInt() - (567.84106F.roundToInt() - 512.15894F.roundToInt()))
+        // hole?.layoutParams?.height = 87.84109F.toInt()
+        // hole?.layoutParams?.width = (567.84106F - 512.15894F).toInt() + 5
 
         try {
             if (rootView?.windowToken == null && rootView?.parent == null) {

@@ -1,9 +1,9 @@
 package com.shpakovskiy.dynamicocean.model
 
 // Common rect structure
-data class GameObject(
+data class FieldHole(
     val x: Float,
     val y: Float,
-    val width: Int,
-    val height: Int
+    val height: Int,
+    val width: Int
 )

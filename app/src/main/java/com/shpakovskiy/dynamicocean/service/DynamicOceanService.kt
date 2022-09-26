@@ -92,8 +92,8 @@ class DynamicOceanService : Service() {
         registerAccelerometerListener()
 
         gameController = DynamicOceanController(
-            gameListener = DynamicOcean(this),
-            screenDataRepository = DeviceScreenDataRepository(this)
+            gameListener = DynamicOcean(applicationContext),
+            screenDataRepository = DeviceScreenDataRepository(applicationContext)
         )
 
         gameController.setLifecycleObserver(controllerLifecycleObserver)
