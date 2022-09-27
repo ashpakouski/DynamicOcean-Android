@@ -40,21 +40,27 @@
             android:layout_height="128dp"
             android:orientation="horizontal"
             android:padding="16dp"
-            android:weightSum="5"
+            android:weightSum="6"
             app:layout_constraintBottom_toBottomOf="@+id/button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
 
-            <ImageView
-                android:layout_width="64dp"
+            <RelativeLayout
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_award" />
+                android:layout_weight="2">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_award" />
+            </RelativeLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="128dp"
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginVertical="4dp"
@@ -62,17 +68,19 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Best attempt"
+                    android:textAlignment="center"
                     android:textColor="@color/text_color"
                     android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/best_time_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="6.294s"
+                    android:textAlignment="center"
                     android:textColor="@color/text_color"
                     android:textSize="28sp" />
             </LinearLayout>
@@ -114,6 +122,7 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
                     android:layout_weight="1">
 
                     <ImageView
@@ -128,6 +137,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginVertical="4dp"
+                    android:layout_marginStart="16dp"
                     android:layout_weight="5"
                     android:orientation="vertical">
 
@@ -179,6 +189,7 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
                     android:layout_weight="1">
 
                     <ImageView
@@ -193,6 +204,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginVertical="4dp"
+                    android:layout_marginStart="16dp"
                     android:layout_weight="5"
                     android:orientation="vertical">
 

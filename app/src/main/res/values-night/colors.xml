@@ -10,4 +10,5 @@
     <color name="main_background">#FF1B1A1F</color>
     <color name="text_color">#FFF1F1F3</color>
     <color name="button_color">#FF40465B</color>
+    <color name="light_pink">#FF573E5A</color>
 </resources>
