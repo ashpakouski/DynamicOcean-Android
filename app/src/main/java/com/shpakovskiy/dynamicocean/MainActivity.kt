@@ -2,6 +2,7 @@ package com.shpakovskiy.dynamicocean
 
 import android.content.Intent
 import android.graphics.RectF
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -10,6 +11,7 @@ import android.view.WindowInsets
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.shpakovskiy.dynamicocean.model.DeviceScreen
+import com.shpakovskiy.dynamicocean.model.DisplayCutout
 import com.shpakovskiy.dynamicocean.model.toDisplayCutout
 import com.shpakovskiy.dynamicocean.repository.DeviceScreenDataRepository
 import com.shpakovskiy.dynamicocean.repository.OceanGameStatRepository
@@ -75,15 +77,26 @@ class MainActivity : AppCompatActivity() {
         )
 
         val displayCutout = window.decorView.rootWindowInsets.displayCutout
-        if (displayCutout != null) {
-            val cutoutBounds = RectF()
-            val cutoutPath = displayCutout.cutoutPath
 
-            if (cutoutPath != null) {
-                cutoutPath.computeBounds(cutoutBounds, true)
-                screenDataRepository.displayCutout = cutoutBounds.toDisplayCutout()
+        if (displayCutout != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val cutoutBounds = RectF()
+                val cutoutPath = displayCutout.cutoutPath
+
+                if (cutoutPath != null) {
+                    cutoutPath.computeBounds(cutoutBounds, true)
+                    screenDataRepository.displayCutout = cutoutBounds.toDisplayCutout()
+                } else {
+                    Log.e(TAG, "There is no display cutout path")
+                }
             } else {
-                Log.e(TAG, "There is no display cutout path")
+                val rect = displayCutout.boundingRects.first()
+                screenDataRepository.displayCutout = DisplayCutout(
+                    left = rect.left.toFloat(),
+                    top = rect.top.toFloat(),
+                    right = rect.right.toFloat(),
+                    bottom = rect.bottom.toFloat()
+                )
             }
         } else {
             Log.e(TAG, "There is no display cutout")

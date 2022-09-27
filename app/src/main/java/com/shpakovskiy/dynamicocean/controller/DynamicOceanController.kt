@@ -5,6 +5,7 @@ import com.shpakovskiy.dynamicocean.model.*
 import com.shpakovskiy.dynamicocean.repository.GameStatRepository
 import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
 import kotlin.math.abs
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 interface GameListener {
@@ -41,24 +42,37 @@ class DynamicOceanController(
     screenDataRepository: ScreenDataRepository,
     private val gameStatRepository: GameStatRepository
 ) : GameController {
+    // Game objects
     private var gameObject: GameObject
-    private var gameField: GameField
-    private var fieldHole: FieldHole
+    private val gameField: GameField
+    private val fieldHole: FieldHole
 
     init {
         val displayCutout = screenDataRepository.displayCutout
-            ?: throw RuntimeException("Display cutout should not be null")
+            ?: throw Exception("Display cutout should not be null")
         val deviceScreen = screenDataRepository.deviceScreen
-            ?: throw RuntimeException("Device screen should not be null")
+            ?: throw Exception("Device screen should not be null")
+
+        // TODO: Move model initialization logic in other model-specific places
 
         // Util
+        //
+        // Some devices (Like Galaxy A52) don't have an information about gap size between camera
+        // and top of the screen, so required values have to be retrieved indirectly
         var realCutoutHeight = displayCutout.height
         var realCutoutMargin = displayCutout.top
+
         if (abs(displayCutout.width / displayCutout.height - 1.0F) > 0.1F || displayCutout.top == 0.0F) {
-            realCutoutHeight = displayCutout.width
+            realCutoutHeight = min(displayCutout.width, displayCutout.height)
             realCutoutMargin = displayCutout.bottom - realCutoutHeight
         }
 
+        // Game field
+        //
+        // Game field is always placed in the top left corner of the screen, because "simple"
+        // overlay doesn't hide status bar widgets. Most of them are placed in the right side.
+        // Width is basically camera width + half of the screen. So, this value is independent
+        // of camera position
         gameField = GameField(
             x = (realCutoutMargin / 2).roundToInt(),
             y = (realCutoutMargin / 2 - deviceScreen.statusBarHeight).roundToInt(),
@@ -68,6 +82,9 @@ class DynamicOceanController(
             heightExpanded = (deviceScreen.width / 2 + displayCutout.width / 2).roundToInt(),
         )
 
+        // Field hole
+        //
+        // Well, it's just a square right above the camera
         fieldHole = FieldHole(
             x = displayCutout.left - realCutoutMargin / 2,
             y = realCutoutMargin / 2,
@@ -76,16 +93,20 @@ class DynamicOceanController(
         )
 
         // Game object
+        //
+        // Min value for height and width are taken just to partially support devices,
+        // that have "drop" or "notch" instead of hole-punch camera.
+        // In other cases width is almost equal to height.
+        // Non-circular cutouts are not supposed to be fully supported, as it violates game principle.
         gameObject = GameObject(
             200F, 200F,
-            displayCutout.width.roundToInt(),
-            displayCutout.width.roundToInt()
+            min(displayCutout.width, displayCutout.height).roundToInt(),
+            min(displayCutout.width, displayCutout.height).roundToInt()
         )
         gameObject = gameObject.randomizePosition()
     }
 
     private var gameStartMillis = 0L
-
     private var lifecycleObserver: ControllerLifecycleObserver? = null
 
     override fun createGameField() {
@@ -127,13 +148,6 @@ class DynamicOceanController(
         val xMove = x * acceleration
         val yMove = y * acceleration
 
-        // Log.d("TAG123", "GoXY: [${gameObject.x}, ${gameObject.y}] DcLT: [${displayCutout.left}; ${displayCutout.top}]")
-        Log.d(
-            "TAG123",
-            "DiffXY: [${abs(gameObject.x - fieldHole.x)}; ${abs(gameObject.y - fieldHole.y)}]"
-        )
-
-        //if (abs(gameObject.x - displayCutout.left / 2) < 10 && abs(gameObject.y - displayCutout.top / 2) < 10) {
         if (abs(gameObject.x - fieldHole.x) < 3 && abs(gameObject.y - fieldHole.y) < 3) {
             finishGame()
         } else {
