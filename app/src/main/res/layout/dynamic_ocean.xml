@@ -25,6 +25,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="Blowfish"
-            android:src="@drawable/blowfish_stretched" />
+            android:src="@drawable/blowfish" />
     </com.shpakovskiy.dynamicocean.view.ExpandableCard>
 </LinearLayout>

@@ -1,15 +1,19 @@
 package com.shpakovskiy.dynamicocean
 
+import android.Manifest
 import android.content.Intent
 import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.view.View
 import android.view.WindowInsets
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.shpakovskiy.dynamicocean.model.DeviceScreen
 import com.shpakovskiy.dynamicocean.model.DisplayCutout
 import com.shpakovskiy.dynamicocean.model.toDisplayCutout
@@ -27,31 +31,66 @@ class MainActivity : AppCompatActivity() {
     private lateinit var gameStatRepository: OceanGameStatRepository
 
     private lateinit var bestTimeView: TextView
+    private lateinit var overlaySwitch: SwitchMaterial
+    private lateinit var notificationsSwitch: SwitchMaterial
+    private lateinit var oceanLauncherButton: MaterialButton
+
+    private var isOverlayPermissionGranted = false
+    private var isNotificationsPermissionGranted = false
+
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        displayPermissionsStatus()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Repositories
         screenDataRepository = DeviceScreenDataRepository(applicationContext)
         gameStatRepository = OceanGameStatRepository(applicationContext)
 
-        checkOverlayPermission()
+        // Views
+        bestTimeView = findViewById(R.id.best_time_view)
+        overlaySwitch = findViewById(R.id.switch_overlay_permission)
+        notificationsSwitch = findViewById(R.id.switch_notifications_permission)
+        oceanLauncherButton = findViewById(R.id.ocean_launcher_button)
 
-        findViewById<View>(R.id.ocean_launcher_button).setOnClickListener {
-            startService()
+        // View callbacks
+        overlaySwitch.setOnClickListener {
+            openOverlaySettings()
         }
 
-        bestTimeView = findViewById(R.id.best_time_view)
+        notificationsSwitch.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        oceanLauncherButton.setOnClickListener {
+            startService()
+        }
     }
 
     override fun onResume() {
         super.onResume()
 
+        // Update best time view
         val bestTime = gameStatRepository.bestAttemptTime
         if (bestTime != OceanGameStatRepository.BEST_ATTEMPT_TIME_UNAVAILABLE) {
             val bestTimeText = "${(bestTime / 1000.0F)}s"
             bestTimeView.text = bestTimeText
         }
+
+        // Permissions check
+        isOverlayPermissionGranted = Settings.canDrawOverlays(this)
+        isNotificationsPermissionGranted =
+            NotificationManagerCompat.from(this).areNotificationsEnabled()
+
+        // Update UI according to permissions status
+        displayPermissionsStatus()
     }
 
     private fun startService() {
@@ -60,13 +99,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkOverlayPermission() {
-        if (!Settings.canDrawOverlays(this)) {
-            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
-        }
-    }
-
     // TODO: Handle cases, when device doesn't have any cutouts
+    // TODO: Decompose method logic
     override fun onAttachedToWindow() {
         screenDataRepository.deviceScreen = DeviceScreen(
             width = window.windowManager.maximumWindowMetrics.bounds.right,
@@ -101,5 +135,20 @@ class MainActivity : AppCompatActivity() {
         } else {
             Log.e(TAG, "There is no display cutout")
         }
+    }
+
+    private fun openOverlaySettings() {
+        startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
+    }
+
+    private fun displayPermissionsStatus() {
+        overlaySwitch.isChecked = isOverlayPermissionGranted
+        overlaySwitch.isClickable = !isOverlayPermissionGranted
+
+        notificationsSwitch.isChecked = isNotificationsPermissionGranted
+        notificationsSwitch.isClickable = !isNotificationsPermissionGranted
+
+        oceanLauncherButton.isEnabled =
+            isOverlayPermissionGranted && isNotificationsPermissionGranted
     }
 }
