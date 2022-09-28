@@ -1,6 +1,5 @@
 package com.shpakovskiy.dynamicocean.controller
 
-import android.util.Log
 import com.shpakovskiy.dynamicocean.model.*
 import com.shpakovskiy.dynamicocean.repository.GameStatRepository
 import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
@@ -27,14 +26,14 @@ interface GameController {
     fun destroyGameField()
 
     // Game object
-    fun moveRequest(x: Float, y: Float)
+    fun moveObject(x: Float, y: Float)
 
     // Util
-    fun setLifecycleObserver(lifecycleObserver: ControllerLifecycleObserver)
+    fun setEventObserver(eventObserver: ControllerEventObserver)
 }
 
-interface ControllerLifecycleObserver {
-    fun onDestroy()
+interface ControllerEventObserver {
+    fun onGameFinished()
 }
 
 class DynamicOceanController(
@@ -103,14 +102,14 @@ class DynamicOceanController(
             min(displayCutout.width, displayCutout.height).roundToInt(),
             min(displayCutout.width, displayCutout.height).roundToInt()
         )
-        gameObject = gameObject.randomizePosition()
     }
 
     private var gameStartMillis = 0L
-    private var lifecycleObserver: ControllerLifecycleObserver? = null
+    private var eventObserver: ControllerEventObserver? = null
 
     override fun createGameField() {
         gameListener.createGameField(gameField)
+        gameObject = gameObject.randomizePosition()
     }
 
     override fun startGame() {
@@ -134,7 +133,8 @@ class DynamicOceanController(
     }
 
     override fun destroyGameField() {
-        lifecycleObserver?.onDestroy()
+        eventObserver?.onGameFinished()
+
         gameListener.resizeGameField(
             height = gameField.heightCollapsed,
             width = gameField.widthCollapsed
@@ -143,7 +143,7 @@ class DynamicOceanController(
         }
     }
 
-    override fun moveRequest(x: Float, y: Float) {
+    override fun moveObject(x: Float, y: Float) {
         val acceleration = 5
         val xMove = x * acceleration
         val yMove = y * acceleration
@@ -171,8 +171,8 @@ class DynamicOceanController(
         }
     }
 
-    override fun setLifecycleObserver(lifecycleObserver: ControllerLifecycleObserver) {
-        this.lifecycleObserver = lifecycleObserver
+    override fun setEventObserver(eventObserver: ControllerEventObserver) {
+        this.eventObserver = eventObserver
     }
 
     private fun GameObject.randomizePosition(): GameObject {

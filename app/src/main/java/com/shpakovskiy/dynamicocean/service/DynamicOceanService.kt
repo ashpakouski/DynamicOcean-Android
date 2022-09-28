@@ -13,74 +13,81 @@ import android.hardware.SensorManager
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.shpakovskiy.dynamicocean.R
-import com.shpakovskiy.dynamicocean.controller.ControllerLifecycleObserver
+import com.shpakovskiy.dynamicocean.controller.ControllerEventObserver
 import com.shpakovskiy.dynamicocean.controller.GameController
 import com.shpakovskiy.dynamicocean.controller.DynamicOceanController
 import com.shpakovskiy.dynamicocean.repository.DeviceScreenDataRepository
 import com.shpakovskiy.dynamicocean.repository.OceanGameStatRepository
 import com.shpakovskiy.dynamicocean.view.DynamicOcean
+import kotlin.math.abs
+import kotlin.math.sqrt
 
 class DynamicOceanService : Service() {
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "com.shpakovskiy.dynamicfield"
         private const val NOTIFICATION_CHANNEL_NAME = "Dynamic ocean service"
-        // private const val STABILIZATION_CYCLES = 10
+
+        private const val SERIAL_SHAKES_DELAY_MILLIS = 1000L
+        private const val SHAKE_ACCELERATION = 10L
 
         // Well, I didn't want it, but I'm gonna give it a chance for now
         var isRunning = false
     }
 
+    // Game properties
+    private lateinit var gameController: GameController
+    private var isGameFieldCreated = false
+
+    // Acceleration detector properties
     private var sensorManager: SensorManager? = null
     private var accelerometer: Sensor? = null
-
-    private lateinit var gameController: GameController
-
-    // private var acceleration = 0f
-    // private var currentAcceleration = 0f
-    // private var lastAcceleration = 0f
-    // private var serialShakes = 0
+    private var acceleration = 0F
+    private var currentAcceleration = 0F
+    private var lastAcceleration = 0F
+    private var lastShakeTime = 0L
 
     private val accelerometerListener: SensorEventListener = object : SensorEventListener {
-        override fun onSensorChanged(event: SensorEvent) {
+        override fun onSensorChanged(sensorEvent: SensorEvent) {
             // [0] | Left -> [0; 10] | Right -> [0; -10]
             // [0] | Down -> [0; -10] | Up -> [0; 10]
-            // Fetching x,y,z values
-//            val x = event.values[0]
-//            val y = event.values[1]
-//            val z = event.values[2]
-//            lastAcceleration = currentAcceleration
-//
-//            // Getting current accelerations
-//            // with the help of fetched x,y,z values
-//            currentAcceleration = sqrt((x * x + y * y + z * z).toDouble()).toFloat()
-//            val delta: Float = currentAcceleration - lastAcceleration
-//            acceleration = /*acceleration * 0.9f +*/ delta
-//
-//            // Display a Toast message if
-//            // acceleration value is over 12
-//            Log.d("TAG123", "CA: $currentAcceleration; LA: $lastAcceleration; A: $acceleration")
-//
-//            if (currentAcceleration != 0F && lastAcceleration != 0F && abs(acceleration) > 2) {
-//                if (serialShakes == 0) {
-//                    Log.d("TAG123", "Shaaaaaake!!!!!!!!")
-//                    Toast.makeText(applicationContext, "Shake event detected", Toast.LENGTH_SHORT)
-//                        .show()
-//                }
-//                serialShakes++
-//            } else {
-//                serialShakes = 0
-//            }
 
-            gameController.moveRequest(-1 * event.values[0], event.values[1])
+            // Get acceleration by each axis
+            val x = sensorEvent.values[0]
+            val y = sensorEvent.values[1]
+            val z = sensorEvent.values[2]
+
+            if (!isGameFieldCreated) {
+                // Save previous acceleration and get new resulting acceleration as sum of vectors
+                lastAcceleration = currentAcceleration
+                currentAcceleration = sqrt(x * x + y * y + z * z)
+
+                // Calculate difference and "smoothify" acceleration
+                val delta = currentAcceleration - lastAcceleration
+                acceleration = acceleration * 0.9F + delta
+
+                val now = System.currentTimeMillis()
+                if (now - lastShakeTime > SERIAL_SHAKES_DELAY_MILLIS &&
+                    currentAcceleration != 0F && lastAcceleration != 0F &&
+                    abs(acceleration) > SHAKE_ACCELERATION
+                ) {
+                    gameController.createGameField()
+                    gameController.startGame()
+
+                    isGameFieldCreated = true
+
+                    lastShakeTime = now
+                }
+            } else {
+                gameController.moveObject(-1 * x, y)
+            }
         }
 
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) = Unit
     }
 
-    private val controllerLifecycleObserver = object : ControllerLifecycleObserver {
-        override fun onDestroy() {
-            unregisterAccelerometerListener()
-            stopSelf()
+    private val controllerLifecycleObserver = object : ControllerEventObserver {
+        override fun onGameFinished() {
+            isGameFieldCreated = false
         }
     }
 
@@ -98,9 +105,7 @@ class DynamicOceanService : Service() {
             gameStatRepository = OceanGameStatRepository(applicationContext)
         )
 
-        gameController.setLifecycleObserver(controllerLifecycleObserver)
-        gameController.createGameField()
-        gameController.startGame()
+        gameController.setEventObserver(controllerLifecycleObserver)
     }
 
     private fun registerAccelerometerListener() {
@@ -147,6 +152,8 @@ class DynamicOceanService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        unregisterAccelerometerListener()
         isRunning = false
     }
 }
