@@ -70,7 +70,6 @@ class DynamicOcean(private val context: Context) : GameListener {
     }
 
     override fun destroyGameField() {
-        // context.stopService(Intent(context, DynamicOceanService::class.java))
         try {
             windowManager.removeView(rootView)
             rootView?.invalidate()

@@ -70,7 +70,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         oceanLauncherButton.setOnClickListener {
-            startService()
+            if (!DynamicOceanService.isRunning) {
+                startService()
+                updateActivationButton(true)
+            } else {
+                stopService()
+                updateActivationButton(false)
+            }
         }
     }
 
@@ -91,12 +97,17 @@ class MainActivity : AppCompatActivity() {
 
         // Update UI according to permissions status
         displayPermissionsStatus()
+        updateActivationButton()
     }
 
     private fun startService() {
         if (Settings.canDrawOverlays(this)) {
             startForegroundService(Intent(this, DynamicOceanService::class.java))
         }
+    }
+
+    private fun stopService() {
+        stopService(Intent(this, DynamicOceanService::class.java))
     }
 
     // TODO: Handle cases, when device doesn't have any cutouts
@@ -150,5 +161,15 @@ class MainActivity : AppCompatActivity() {
 
         oceanLauncherButton.isEnabled =
             isOverlayPermissionGranted && isNotificationsPermissionGranted
+    }
+
+    // `isServiceRunning` parameter has to be added, as service doesn't change
+    // corresponding value quick enough bu itself
+    private fun updateActivationButton(isServiceRunning: Boolean = DynamicOceanService.isRunning) {
+        oceanLauncherButton.text = if (isServiceRunning) {
+            "Tap to stop dynamic ocean"
+        } else {
+            "Tap to start dynamic ocean"
+        }
     }
 }
