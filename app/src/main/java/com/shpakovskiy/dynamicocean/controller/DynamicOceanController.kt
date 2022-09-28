@@ -7,35 +7,6 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-interface GameListener {
-    // Game field
-    fun createGameField(gameField: GameField)
-    fun resizeGameField(width: Int, height: Int, onDone: (() -> Unit)? = null)
-    fun destroyGameField()
-
-    // Game object
-    fun putGameObject(gameObject: GameObject)
-    fun replaceObject(gameObject: GameObject)
-}
-
-interface GameController {
-    // Game field
-    fun createGameField()
-    fun startGame()
-    fun finishGame()
-    fun destroyGameField()
-
-    // Game object
-    fun moveObject(x: Float, y: Float)
-
-    // Util
-    fun setEventObserver(eventObserver: ControllerEventObserver)
-}
-
-interface ControllerEventObserver {
-    fun onGameFinished()
-}
-
 class DynamicOceanController(
     private val gameListener: GameListener,
     screenDataRepository: ScreenDataRepository,
@@ -143,7 +114,7 @@ class DynamicOceanController(
         }
     }
 
-    override fun moveObject(x: Float, y: Float) {
+    override fun shiftObject(x: Float, y: Float) {
         val acceleration = 5
         val xMove = x * acceleration
         val yMove = y * acceleration
@@ -167,7 +138,7 @@ class DynamicOceanController(
                 gameObject.copy(y = gameObject.y + yMove)
             }
 
-            gameListener.replaceObject(gameObject)
+            gameListener.moveObject(gameObject)
         }
     }
 

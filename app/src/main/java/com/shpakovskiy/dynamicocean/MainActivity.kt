@@ -27,14 +27,17 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
     }
 
+    // Repositories
     private lateinit var screenDataRepository: ScreenDataRepository
     private lateinit var gameStatRepository: OceanGameStatRepository
 
+    // Views
     private lateinit var bestTimeView: TextView
     private lateinit var overlaySwitch: SwitchMaterial
     private lateinit var notificationsSwitch: SwitchMaterial
     private lateinit var oceanLauncherButton: MaterialButton
 
+    // Permissions
     private var isOverlayPermissionGranted = false
     private var isNotificationsPermissionGranted = false
 

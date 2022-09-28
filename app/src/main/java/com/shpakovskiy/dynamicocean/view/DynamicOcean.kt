@@ -78,7 +78,7 @@ class DynamicOcean(private val context: Context) : GameListener {
         }
     }
 
-    override fun replaceObject(gameObject: GameObject) {
+    override fun moveObject(gameObject: GameObject) {
         movingObject?.let {
             ObjectAnimator.ofFloat(movingObject, View.X, gameObject.x).apply {
                 duration = 250

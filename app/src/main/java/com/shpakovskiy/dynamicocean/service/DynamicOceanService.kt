@@ -78,7 +78,7 @@ class DynamicOceanService : Service() {
                     lastShakeTime = now
                 }
             } else {
-                gameController.moveObject(-1 * x, y)
+                gameController.shiftObject(-1 * x, y)
             }
         }
 
