@@ -154,6 +154,8 @@ class DynamicOceanService : Service() {
         super.onDestroy()
 
         unregisterAccelerometerListener()
+        gameController.destroyGameField()
+
         isRunning = false
     }
 }

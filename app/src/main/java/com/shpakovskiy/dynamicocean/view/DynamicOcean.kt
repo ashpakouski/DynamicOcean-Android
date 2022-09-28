@@ -2,7 +2,6 @@ package com.shpakovskiy.dynamicocean.view
 
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.content.Intent
 import android.graphics.PixelFormat
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -13,13 +12,8 @@ import com.shpakovskiy.dynamicocean.R
 import com.shpakovskiy.dynamicocean.controller.GameListener
 import com.shpakovskiy.dynamicocean.model.GameField
 import com.shpakovskiy.dynamicocean.model.GameObject
-import com.shpakovskiy.dynamicocean.service.DynamicOceanService
 
 class DynamicOcean(private val context: Context) : GameListener {
-    companion object {
-        private const val TAG = "DynamicOcean"
-    }
-
     private var rootView: View? = null
     private var rootViewParams: WindowManager.LayoutParams? = null
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
