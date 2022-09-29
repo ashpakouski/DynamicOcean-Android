@@ -10,3 +10,9 @@ To play this game, you have to follow some super simple steps:
 5. When attempt succeeds, the Ocean collapses automatically and you can shake your device again to start a new game.
 6. Go back to the app and stop the Ocean until you want to play again to prevent a device from unwanted battery drain.
 7. Have fun!
+
+## Screenshots
+[<img src="https://user-images.githubusercontent.com/50966785/193133999-9bca5c5c-3896-4242-b3d3-d8cf31ded362.png" align="center"
+width="200" hspace="10" vspace="10">](Screenshot-2)
+[<img src="https://user-images.githubusercontent.com/50966785/193134019-4873a2dc-3f11-4847-bbeb-c0b857cf9ac2.png" align="center"
+width="200" hspace="10" vspace="10">](Screenshot-1)
