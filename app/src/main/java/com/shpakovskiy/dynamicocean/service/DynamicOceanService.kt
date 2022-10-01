@@ -138,7 +138,7 @@ class DynamicOceanService : Service() {
             NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).setOngoing(true)
                 .setContentTitle("Dynamic ocean is running")
                 .setContentText("Displaying over other apps")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.white_fish)
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build()
