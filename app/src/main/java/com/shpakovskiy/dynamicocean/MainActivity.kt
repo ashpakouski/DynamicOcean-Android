@@ -1,6 +1,7 @@
 package com.shpakovskiy.dynamicocean
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.RectF
 import android.os.Build
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.WindowInsets
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ViewAnimator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
@@ -83,9 +85,11 @@ class MainActivity : AppCompatActivity() {
             if (!DynamicOceanService.isRunning) {
                 startService()
                 updateActivationButton(true)
+                updateWarningView(true)
             } else {
                 stopService()
                 updateActivationButton(false)
+                updateWarningView(false)
             }
         }
     }
@@ -108,6 +112,7 @@ class MainActivity : AppCompatActivity() {
         // Update UI according to permissions status
         displayPermissionsStatus()
         updateActivationButton()
+        updateWarningView()
     }
 
     private fun startService() {
@@ -170,7 +175,6 @@ class MainActivity : AppCompatActivity() {
         notificationsSwitch.isClickable = !isNotificationsPermissionGranted
 
         oceanLauncherButton.isEnabled = areRequiredPermissionsGranted()
-        warningView.visibility = if (areRequiredPermissionsGranted()) View.GONE else View.VISIBLE
     }
 
     // `isServiceRunning` parameter has to be added, as service doesn't change
@@ -180,6 +184,19 @@ class MainActivity : AppCompatActivity() {
             "Tap to stop dynamic ocean"
         } else {
             "Tap to start dynamic ocean"
+        }
+    }
+
+    private fun updateWarningView(isServiceRunning: Boolean = DynamicOceanService.isRunning) {
+        if (!areRequiredPermissionsGranted()) {
+            warningView.text = "You need to grant all permissions to start a game"
+        } else {
+            if (isServiceRunning) {
+                warningView.text = "Don't forget to stop Dynamic Ocean, when you are not using it to prevent unwanted battery drain"
+            } else {
+                warningView.text =
+                    "• Tap the button below to start the Dynamic Ocean\n• Shake your device to activate game field and tilt it to trap the Blowfish in a camera hole"
+            }
         }
     }
 }
