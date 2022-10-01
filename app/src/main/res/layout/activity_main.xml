@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="Best attempt"
+                    android:text="@string/menu_field_best_attempt"
                     android:textAlignment="center"
                     android:textColor="@color/text_color"
                     android:textSize="24sp" />
@@ -71,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="-.-"
+                    android:text="@string/menu_field_best_time_default"
                     android:textAlignment="center"
                     android:textColor="@color/text_color"
                     android:textSize="28sp" />
@@ -130,7 +130,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Draw over other apps"
+                        android:text="@string/permission_title_overlay"
                         android:textColor="@color/text_color"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -139,7 +139,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:alpha="0.5"
-                        android:text="This permission is needed to show an overlay over the other apps"
+                        android:text="@string/permission_description_overlay"
                         android:textColor="@color/text_color"
                         android:textSize="16sp" />
                 </LinearLayout>
@@ -185,7 +185,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Post notifications"
+                        android:text="@string/permission_title_notifications"
                         android:textColor="@color/text_color"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -194,7 +194,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:alpha="0.5"
-                        android:text="This permission is needed for normal foreground service work"
+                        android:text="@string/permission_description_notifications"
                         android:textColor="@color/text_color"
                         android:textSize="16sp" />
                 </LinearLayout>
@@ -254,7 +254,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Information"
+                    android:text="@string/menu_field_information"
                     android:textColor="@color/text_color"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -278,7 +278,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/button_color"
-        android:text="Tap to start Dynamic Ocean"
+        android:text="@string/menu_button_activation_disabled"
         android:textColor="@color/text_color"
         app:cornerRadius="16dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -1,18 +1,14 @@
 package com.shpakovskiy.dynamicocean
 
 import android.Manifest
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.view.View
 import android.view.WindowInsets
 import android.widget.TextView
-import android.widget.Toast
-import android.widget.ViewAnimator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
@@ -45,9 +41,13 @@ class MainActivity : AppCompatActivity() {
     // Permissions
     private var isOverlayPermissionGranted = false
     private var isNotificationsPermissionGranted = false
+    private var isDisplayCutoutExist = false
 
     private fun areRequiredPermissionsGranted(): Boolean =
         isOverlayPermissionGranted && isNotificationsPermissionGranted
+
+    private fun areSystemRequirementsSatisfied(): Boolean =
+        areRequiredPermissionsGranted() && isDisplayCutoutExist
 
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -158,6 +158,10 @@ class MainActivity : AppCompatActivity() {
                     bottom = rect.bottom.toFloat()
                 )
             }
+
+            isDisplayCutoutExist = true
+            displayPermissionsStatus()
+            updateWarningView()
         } else {
             Log.e(TAG, "There is no display cutout")
         }
@@ -174,28 +178,32 @@ class MainActivity : AppCompatActivity() {
         notificationsSwitch.isChecked = isNotificationsPermissionGranted
         notificationsSwitch.isClickable = !isNotificationsPermissionGranted
 
-        oceanLauncherButton.isEnabled = areRequiredPermissionsGranted()
+        oceanLauncherButton.isEnabled = areSystemRequirementsSatisfied()
     }
 
     // `isServiceRunning` parameter has to be added, as service doesn't change
     // corresponding value quick enough bu itself
     private fun updateActivationButton(isServiceRunning: Boolean = DynamicOceanService.isRunning) {
         oceanLauncherButton.text = if (isServiceRunning) {
-            "Tap to stop dynamic ocean"
+            resources.getText(R.string.menu_button_activation_enabled)
         } else {
-            "Tap to start dynamic ocean"
+            resources.getText(R.string.menu_button_activation_disabled)
         }
     }
 
     private fun updateWarningView(isServiceRunning: Boolean = DynamicOceanService.isRunning) {
+        if (!isDisplayCutoutExist) {
+            warningView.text = resources.getText(R.string.error_no_cutout)
+            return
+        }
+
         if (!areRequiredPermissionsGranted()) {
-            warningView.text = "You need to grant all permissions to start a game"
+            warningView.text = resources.getText(R.string.permission_request_all)
         } else {
             if (isServiceRunning) {
-                warningView.text = "Don't forget to stop Dynamic Ocean, when you are not using it to prevent unwanted battery drain"
+                warningView.text = resources.getText(R.string.warning_battery_drain)
             } else {
-                warningView.text =
-                    "• Tap the button below to start the Dynamic Ocean\n• Shake your device to activate game field and tilt it to trap the Blowfish in a camera hole"
+                warningView.text = resources.getText(R.string.game_rules_short)
             }
         }
     }

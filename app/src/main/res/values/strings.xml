@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">Dynamic Ocean</string>
+
+    <string name="game_object_blowfish">Blowfish</string>
+
+    <string name="menu_field_best_attempt">Best attempt</string>
+    <string name="menu_field_best_time_default">-.-</string>
+    <string name="menu_field_information">Information</string>
+    <string name="menu_button_activation_disabled">Tap to start Dynamic Ocean</string>
+    <string name="menu_button_activation_enabled">Tap to stop Dynamic Ocean</string>
+
+    <string name="permission_title_overlay">Draw over other apps</string>
+    <string name="permission_title_notifications">Post notifications</string>
+    <string name="permission_description_overlay">This permission is needed to show an overlay over the other apps</string>
+    <string name="permission_description_notifications">This permission is needed for normal foreground service work</string>
+
+    <string name="permission_request_all">You need to grant all permissions to start a game</string>
+
+    <string name="error_no_cutout">Your device doesn\'t have hole\-punch camera, so you can\'t play this game</string>
+
+    <string name="warning_battery_drain">Don\'t forget to stop Dynamic Ocean, when you are not using it to prevent unwanted battery drain</string>
+
+    <string name="game_rules_short">• Tap the button below to start the Dynamic Ocean\n• Shake your device to activate game field and tilt it to trap the Blowfish in a camera hole</string>
 </resources>
