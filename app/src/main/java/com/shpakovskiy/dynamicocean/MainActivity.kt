@@ -7,8 +7,10 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.view.WindowInsets
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
@@ -36,10 +38,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var overlaySwitch: SwitchMaterial
     private lateinit var notificationsSwitch: SwitchMaterial
     private lateinit var oceanLauncherButton: MaterialButton
+    private lateinit var warningView: TextView
 
     // Permissions
     private var isOverlayPermissionGranted = false
     private var isNotificationsPermissionGranted = false
+
+    private fun areRequiredPermissionsGranted(): Boolean =
+        isOverlayPermissionGranted && isNotificationsPermissionGranted
 
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -60,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         overlaySwitch = findViewById(R.id.switch_overlay_permission)
         notificationsSwitch = findViewById(R.id.switch_notifications_permission)
         oceanLauncherButton = findViewById(R.id.ocean_launcher_button)
+        warningView = findViewById(R.id.warning_view)
 
         // View callbacks
         overlaySwitch.setOnClickListener {
@@ -162,8 +169,8 @@ class MainActivity : AppCompatActivity() {
         notificationsSwitch.isChecked = isNotificationsPermissionGranted
         notificationsSwitch.isClickable = !isNotificationsPermissionGranted
 
-        oceanLauncherButton.isEnabled =
-            isOverlayPermissionGranted && isNotificationsPermissionGranted
+        oceanLauncherButton.isEnabled = areRequiredPermissionsGranted()
+        warningView.visibility = if (areRequiredPermissionsGranted()) View.GONE else View.VISIBLE
     }
 
     // `isServiceRunning` parameter has to be added, as service doesn't change

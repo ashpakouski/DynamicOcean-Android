@@ -59,6 +59,7 @@ class DynamicOcean(private val context: Context) : GameListener {
         movingObject = rootView?.findViewById(R.id.game_object)
         movingObject?.x = gameObject.x
         movingObject?.y = gameObject.y
+        if (gameObject.isMirrored) movingObject?.scaleX = -1F
         movingObject?.layoutParams?.width = gameObject.width
         movingObject?.layoutParams?.height = gameObject.height
     }

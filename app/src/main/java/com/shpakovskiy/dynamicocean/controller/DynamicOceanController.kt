@@ -71,7 +71,8 @@ class DynamicOceanController(
         gameObject = GameObject(
             200F, 200F,
             min(displayCutout.width, displayCutout.height).roundToInt(),
-            min(displayCutout.width, displayCutout.height).roundToInt()
+            min(displayCutout.width, displayCutout.height).roundToInt(),
+            isMirrored = fieldHole.x > deviceScreen.width / 3
         )
     }
 

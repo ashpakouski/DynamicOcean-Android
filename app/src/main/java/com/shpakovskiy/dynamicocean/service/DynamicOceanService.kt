@@ -136,8 +136,8 @@ class DynamicOceanService : Service() {
 
         val notification =
             NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).setOngoing(true)
-                .setContentTitle("Dynamic ocean is running")
-                .setContentText("Displaying over other apps")
+                .setContentTitle("Dynamic Ocean is running")
+                .setContentText("Shake your device to start a game")
                 .setSmallIcon(R.drawable.white_fish)
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
