@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) {
         displayPermissionsStatus()
+        updateWarningView()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -25,5 +25,5 @@
 
     <string name="settings_item_difficulty">Difficulty</string>
     <string name="settings_description_difficulty">This setting decides how close the Blowfish should swim to the hole to be considered as trapped (value is measured in pixels, so the BIGGER this value the EASIER to trap the Blowfish)</string>
-    <string name="settings_button_save">Apply</string>
+    <string name="settings_button_save">Save</string>
 </resources>

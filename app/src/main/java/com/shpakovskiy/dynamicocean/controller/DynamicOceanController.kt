@@ -161,7 +161,7 @@ class DynamicOceanController(
         return this.copy(
             x = (0 until (gameField.widthExpanded - gameObject.width))
                 .shuffled().last().toFloat(),
-            y = (0 until (gameField.heightExpanded - gameObject.height))
+            y = (gameField.heightExpanded / 2 until (gameField.heightExpanded - gameObject.height))
                 .shuffled().last().toFloat(),
         )
     }
