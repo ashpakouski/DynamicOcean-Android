@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.WindowInsets
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -18,9 +19,11 @@ import com.shpakovskiy.dynamicocean.model.DeviceScreen
 import com.shpakovskiy.dynamicocean.model.DisplayCutout
 import com.shpakovskiy.dynamicocean.model.toDisplayCutout
 import com.shpakovskiy.dynamicocean.repository.DeviceScreenDataRepository
+import com.shpakovskiy.dynamicocean.repository.OceanGameSettingsRepository
 import com.shpakovskiy.dynamicocean.repository.OceanGameStatRepository
 import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
 import com.shpakovskiy.dynamicocean.service.DynamicOceanService
+import com.shpakovskiy.dynamicocean.view.SettingsDialog
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -36,7 +39,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var overlaySwitch: SwitchMaterial
     private lateinit var notificationsSwitch: SwitchMaterial
     private lateinit var oceanLauncherButton: MaterialButton
-    private lateinit var warningView: TextView
+    private var warningView: TextView? = null
+    private lateinit var settingsButton: ImageView
 
     // Permissions
     private var isOverlayPermissionGranted = false
@@ -69,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         notificationsSwitch = findViewById(R.id.switch_notifications_permission)
         oceanLauncherButton = findViewById(R.id.ocean_launcher_button)
         warningView = findViewById(R.id.warning_view)
+        settingsButton = findViewById(R.id.settings_button)
 
         // View callbacks
         overlaySwitch.setOnClickListener {
@@ -91,6 +96,12 @@ class MainActivity : AppCompatActivity() {
                 updateActivationButton(false)
                 updateWarningView(false)
             }
+        }
+
+        settingsButton.setOnClickListener {
+            SettingsDialog(
+                this, OceanGameSettingsRepository(this)
+            ).show()
         }
     }
 
@@ -193,17 +204,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateWarningView(isServiceRunning: Boolean = DynamicOceanService.isRunning) {
         if (!isDisplayCutoutExist) {
-            warningView.text = resources.getText(R.string.error_no_cutout)
+            warningView?.text = resources.getText(R.string.error_no_cutout)
             return
         }
 
         if (!areRequiredPermissionsGranted()) {
-            warningView.text = resources.getText(R.string.permission_request_all)
+            warningView?.text = resources.getText(R.string.permission_request_all)
         } else {
             if (isServiceRunning) {
-                warningView.text = resources.getText(R.string.warning_battery_drain)
+                warningView?.text = resources.getText(R.string.warning_battery_drain)
             } else {
-                warningView.text = resources.getText(R.string.game_rules_short)
+                warningView?.text = resources.getText(R.string.game_rules_short)
             }
         }
     }

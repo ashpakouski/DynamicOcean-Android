@@ -8,9 +8,13 @@
         <entry key="app/src/main/res/drawable/ic_information.xml" value="0.122" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.122" />
         <entry key="app/src/main/res/drawable/ic_overlay.xml" value="0.14" />
+        <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.122" />
+        <entry key="app/src/main/res/drawable/ic_settings_1.xml" value="0.122" />
         <entry key="app/src/main/res/drawable/rounded_button.xml" value="0.15" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.14114583333333333" />
+        <entry key="app/src/main/res/drawable/rounded_corners_dialog.xml" value="0.122" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.21400134331357162" />
         <entry key="app/src/main/res/layout/dynamic_ocean.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/settings_dialog.xml" value="0.19202898550724637" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.122" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.122" />
       </map>

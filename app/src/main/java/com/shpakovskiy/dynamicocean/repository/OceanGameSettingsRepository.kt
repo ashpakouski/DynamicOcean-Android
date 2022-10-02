@@ -1,6 +1,7 @@
 package com.shpakovskiy.dynamicocean.repository
 
 import android.content.Context
+import com.shpakovskiy.dynamicocean.common.Constants
 
 class OceanGameSettingsRepository(context: Context) :
     SharedPreferencesRepository(context),
@@ -8,7 +9,7 @@ class OceanGameSettingsRepository(context: Context) :
 
     companion object {
         private const val DIFFICULTY = "difficulty"
-        private const val DIFFICULTY_DEFAULT = 10
+        private const val DIFFICULTY_DEFAULT = Constants.Difficulty.DEFAULT
     }
 
     override var difficulty: Int

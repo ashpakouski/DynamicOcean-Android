@@ -3,6 +3,7 @@
 
     <string name="game_object_blowfish">Blowfish</string>
 
+    <string name="menu_item_settings">Settings</string>
     <string name="menu_field_best_attempt">Best attempt</string>
     <string name="menu_field_best_time_default">-.-</string>
     <string name="menu_field_information">Information</string>
@@ -21,4 +22,8 @@
     <string name="warning_battery_drain">Don\'t forget to stop Dynamic Ocean, when you are not using it to prevent unwanted battery drain</string>
 
     <string name="game_rules_short">• Tap the button below to start the Dynamic Ocean\n• Shake your device to activate game field and tilt it to trap the Blowfish in a camera hole</string>
+
+    <string name="settings_item_difficulty">Difficulty</string>
+    <string name="settings_description_difficulty">This setting decides how close the Blowfish should swim to the hole to be considered as trapped (value is measured in pixels, so the BIGGER this value the EASIER to trap the Blowfish)</string>
+    <string name="settings_button_save">Apply</string>
 </resources>

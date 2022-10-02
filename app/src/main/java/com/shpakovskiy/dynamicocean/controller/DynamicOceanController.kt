@@ -90,11 +90,12 @@ class DynamicOceanController(
     }
 
     override fun startGame() {
+        gameObject = gameObject.randomizePosition()
+
         gameListener.resizeGameField(
             width = gameField.widthExpanded,
             height = gameField.heightExpanded
         ) {
-            gameObject = gameObject.randomizePosition()
             gameListener.putGameObject(gameObject)
             gameStartMillis = System.currentTimeMillis()
         }
