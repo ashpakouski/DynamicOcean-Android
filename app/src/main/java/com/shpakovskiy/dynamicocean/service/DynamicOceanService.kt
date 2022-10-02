@@ -140,7 +140,7 @@ class DynamicOceanService : Service() {
             NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).setOngoing(true)
                 .setContentTitle("Dynamic Ocean is running")
                 .setContentText("Shake your device to start a game")
-                .setSmallIcon(R.drawable.white_fish)
+                .setSmallIcon(R.drawable.white_fish_indicator)
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build()
