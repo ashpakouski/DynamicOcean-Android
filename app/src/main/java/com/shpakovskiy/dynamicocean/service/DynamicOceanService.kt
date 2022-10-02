@@ -17,6 +17,7 @@ import com.shpakovskiy.dynamicocean.controller.ControllerEventObserver
 import com.shpakovskiy.dynamicocean.controller.GameController
 import com.shpakovskiy.dynamicocean.controller.DynamicOceanController
 import com.shpakovskiy.dynamicocean.repository.DeviceScreenDataRepository
+import com.shpakovskiy.dynamicocean.repository.OceanGameSettingsRepository
 import com.shpakovskiy.dynamicocean.repository.OceanGameStatRepository
 import com.shpakovskiy.dynamicocean.view.DynamicOcean
 import kotlin.math.abs
@@ -102,7 +103,8 @@ class DynamicOceanService : Service() {
         gameController = DynamicOceanController(
             gameListener = DynamicOcean(applicationContext),
             screenDataRepository = DeviceScreenDataRepository(applicationContext),
-            gameStatRepository = OceanGameStatRepository(applicationContext)
+            gameStatRepository = OceanGameStatRepository(applicationContext),
+            gameSettingsRepository = OceanGameSettingsRepository(applicationContext)
         )
 
         gameController.setEventObserver(controllerLifecycleObserver)

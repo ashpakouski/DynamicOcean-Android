@@ -1,6 +1,7 @@
 package com.shpakovskiy.dynamicocean.controller
 
 import com.shpakovskiy.dynamicocean.model.*
+import com.shpakovskiy.dynamicocean.repository.GameSettingsRepository
 import com.shpakovskiy.dynamicocean.repository.GameStatRepository
 import com.shpakovskiy.dynamicocean.repository.ScreenDataRepository
 import kotlin.math.abs
@@ -10,7 +11,8 @@ import kotlin.math.roundToInt
 class DynamicOceanController(
     private val gameListener: GameListener,
     screenDataRepository: ScreenDataRepository,
-    private val gameStatRepository: GameStatRepository
+    private val gameStatRepository: GameStatRepository,
+    private val gameSettingsRepository: GameSettingsRepository
 ) : GameController {
     // Game objects
     private var gameObject: GameObject
@@ -79,9 +81,12 @@ class DynamicOceanController(
     private var gameStartMillis = 0L
     private var eventObserver: ControllerEventObserver? = null
 
+    // Gap between object and hole to understand, that object is really "trapped"
+    // TODO: Think of moving this property to FieldHole model
+    private var holeGapSize: Int = 5
+
     override fun createGameField() {
         gameListener.createGameField(gameField)
-        gameObject = gameObject.randomizePosition()
     }
 
     override fun startGame() {
@@ -93,6 +98,8 @@ class DynamicOceanController(
             gameListener.putGameObject(gameObject)
             gameStartMillis = System.currentTimeMillis()
         }
+
+        holeGapSize = gameSettingsRepository.difficulty
     }
 
     override fun finishGame() {
@@ -120,7 +127,9 @@ class DynamicOceanController(
         val xMove = x * acceleration
         val yMove = y * acceleration
 
-        if (abs(gameObject.x - fieldHole.x) < 3 && abs(gameObject.y - fieldHole.y) < 3) {
+        if (abs(gameObject.x - fieldHole.x) < holeGapSize &&
+            abs(gameObject.y - fieldHole.y) < holeGapSize
+        ) {
             finishGame()
         } else {
             gameObject = if (gameObject.x + xMove <= 0) {
