@@ -6,15 +6,14 @@ import com.google.gson.Gson
 import com.shpakovskiy.dynamicocean.model.DeviceScreen
 import com.shpakovskiy.dynamicocean.model.DisplayCutout
 
-class DeviceScreenDataRepository(context: Context) : ScreenDataRepository {
+class DeviceScreenDataRepository(context: Context) :
+    SharedPreferencesRepository(context),
+    ScreenDataRepository {
+
     companion object {
-        private const val DYNAMIC_OCEAN = "dynamic_ocean"
         private const val DEVICE_SCREEN = "device_screen"
         private const val DISPLAY_CUTOUT = "display_cutout"
     }
-
-    private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences(DYNAMIC_OCEAN, Context.MODE_PRIVATE)
 
     override var deviceScreen: DeviceScreen?
         get() {
