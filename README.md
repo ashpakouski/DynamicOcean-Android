@@ -12,7 +12,9 @@ To play this game, you have to follow some super simple steps:
 7. Have fun!
 
 ## Screenshots
-[<img src="https://user-images.githubusercontent.com/50966785/193133999-9bca5c5c-3896-4242-b3d3-d8cf31ded362.png" align="center"
-width="200" hspace="10" vspace="10">](Screenshot-2)
-[<img src="https://user-images.githubusercontent.com/50966785/193134019-4873a2dc-3f11-4847-bbeb-c0b857cf9ac2.png" align="center"
-width="200" hspace="10" vspace="10">](Screenshot-1)
+[<img src="https://user-images.githubusercontent.com/50966785/193657652-c7f1eb6a-c955-40c8-911e-82e04b5ba6ca.png" align="center"
+width="200" hspace="10" vspace="10">](https://user-images.githubusercontent.com/50966785/193657652-c7f1eb6a-c955-40c8-911e-82e04b5ba6ca.png)
+[<img src="https://user-images.githubusercontent.com/50966785/193657657-5973b401-6732-4c2a-a956-ba992e904d5d.png" align="center"
+width="200" hspace="10" vspace="10">](https://user-images.githubusercontent.com/50966785/193657657-5973b401-6732-4c2a-a956-ba992e904d5d.png)
+[<img src="https://user-images.githubusercontent.com/50966785/193657661-a0952185-6ee8-4a21-9a3f-786c130c868c.png" align="center"
+width="200" hspace="10" vspace="10">](https://user-images.githubusercontent.com/50966785/193657661-a0952185-6ee8-4a21-9a3f-786c130c868c.png)
