@@ -4,15 +4,15 @@
     android:viewportWidth="32"
     android:viewportHeight="32">
     <path
-        android:fillColor="@color/text_color"
+        android:fillColor="@color/side_icon_color"
         android:pathData="M29,2L9,2A1,1 0,0 0,8 3L8,8L3,8A1,1 0,0 0,2 9L2,29a1,1 0,0 0,1 1L23,30a1,1 0,0 0,1 -1L24,24h5a1,1 0,0 0,1 -1L30,3A1,1 0,0 0,29 2ZM4,28L4,10L8,10L8,23a1,1 0,0 0,1 1L22,24v4ZM28,22L24,22L24,21a1,1 0,0 0,-2 0v1L10,22L10,10h1a1,1 0,0 0,0 -2L10,8L10,4L28,4Z" />
     <path
-        android:fillColor="@color/text_color"
+        android:fillColor="@color/side_icon_color"
         android:pathData="M14.33,10h3.34a1,1 0,0 0,0 -2H14.33a1,1 0,1 0,0 2Z" />
     <path
-        android:fillColor="@color/text_color"
+        android:fillColor="@color/side_icon_color"
         android:pathData="M21,10h1v1a1,1 0,0 0,2 0V9a1,1 0,0 0,-1 -1H21a1,1 0,0 0,0 2Z" />
     <path
-        android:fillColor="@color/text_color"
+        android:fillColor="@color/side_icon_color"
         android:pathData="M23,13.33a1,1 0,0 0,-1 1v3.34a1,1 0,0 0,2 0V14.33A1,1 0,0 0,23 13.33Z" />
 </vector>
