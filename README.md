@@ -1,15 +1,16 @@
 # Dynamic Ocean 🐡
 
-Dynamic Ocean is a simple game, that implements an idea of utilizing camera hole as an element of gameplay.
+Dynamic Ocean is a simple game that implements the idea of utilizing the camera hole as an element of gameplay.
 
-To play this game, you have to follow some super simple steps:
-1. Open the app and grant necessary permissions.
-2. Activate Dynamic Ocean by clicking corresponding button at the bottom of the screen. Now you can close the app, Dynamic Ocean will not stop.
+To play this game, follow these super simple steps:
+1. Open the app and grant the necessary permissions.
+2. Activate Dynamic Ocean by clicking the corresponding button at the bottom of the screen. You can now close the app, and Dynamic Ocean will continue running.
 3. Shake your device to make the Ocean and a little Blowfish appear on your screen.
-4. Tilt your device to make the Blowfish swim into a camera hole.
-5. When attempt succeeds, the Ocean collapses automatically and you can shake your device again to start a new game.
-6. Go back to the app and stop the Ocean until you want to play again to prevent a device from unwanted battery drain.
-7. Have fun!
+4. Tilt your device to guide the Blowfish into the camera hole.
+5. When the attempt succeeds, the Ocean will collapse automatically, and you can shake your device again to start a new game.
+6. Return to the app and stop the Ocean when you're done playing to prevent unwanted battery drain.
+
+Have fun!
 
 ## Screenshots
 [<img src="https://user-images.githubusercontent.com/50966785/193657652-c7f1eb6a-c955-40c8-911e-82e04b5ba6ca.png" align="center"
@@ -25,3 +26,7 @@ width="200" hspace="10" vspace="10">](https://user-images.githubusercontent.com/
 <img src="https://user-images.githubusercontent.com/50966785/194356537-d1715c40-d603-4611-8644-aa5956e3d1fd.png" width="45%">
 </a>
 </p>
+
+## Follow for more!
+
+[<img src="https://github.com/AndreiShpakovskiy/BmpViewer/assets/50966785/026046f6-a25d-49bf-861d-776629be14aa" height="50">](https://linkedin.com/in/ashpakouski)
