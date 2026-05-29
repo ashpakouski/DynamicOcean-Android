@@ -12,6 +12,7 @@ espresso = "3.7.0"
 gson = "2.13.2"
 activityCompose = "1.10.1"
 composeBom = "2026.03.01"
+koin = "4.2.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -46,3 +47,6 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-compose-material = { group = "androidx.compose.material", name = "material" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+
+# Dependency Injection
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }

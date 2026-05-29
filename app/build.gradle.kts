@@ -64,4 +64,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.util)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.foundation)
+
+    // Dependency Injection
+    implementation(libs.koin.android)
 }

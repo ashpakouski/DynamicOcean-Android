@@ -22,11 +22,15 @@ import com.shpak.dynamicocean.repository.DeviceScreenDataRepository
 import com.shpak.dynamicocean.repository.OceanGameStatRepository
 import com.shpak.dynamicocean.repository.ScreenDataRepository
 import com.shpak.dynamicocean.service.DynamicOceanService
+import com.shpak.dynamicocean.viewmodel.TestViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
     }
+
+    private val testViewModel: TestViewModel by viewModel()
 
     // Repositories
     private lateinit var screenDataRepository: ScreenDataRepository
@@ -61,6 +65,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Log.d(TAG, testViewModel.testMessage)
 
         // Repositories
         screenDataRepository = DeviceScreenDataRepository(applicationContext)
