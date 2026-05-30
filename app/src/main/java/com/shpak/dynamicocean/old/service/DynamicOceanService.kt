@@ -1,10 +1,9 @@
-package com.shpak.dynamicocean.service
+package com.shpak.dynamicocean.old.service
 
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -13,12 +12,12 @@ import android.hardware.SensorManager
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.shpak.dynamicocean.R
-import com.shpak.dynamicocean.controller.ControllerEventObserver
-import com.shpak.dynamicocean.controller.GameController
-import com.shpak.dynamicocean.controller.DynamicOceanController
-import com.shpak.dynamicocean.repository.DeviceScreenDataRepository
-import com.shpak.dynamicocean.repository.OceanGameStatRepository
-import com.shpak.dynamicocean.view.DynamicOcean
+import com.shpak.dynamicocean.old.controller.ControllerEventObserver
+import com.shpak.dynamicocean.old.controller.GameController
+import com.shpak.dynamicocean.old.controller.DynamicOceanController
+import com.shpak.dynamicocean.old.repository.DeviceScreenDataRepository
+import com.shpak.dynamicocean.old.repository.OceanGameStatRepository
+import com.shpak.dynamicocean.old.view.DynamicOcean
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -109,7 +108,7 @@ class DynamicOceanService : Service() {
     }
 
     private fun registerAccelerometerListener() {
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
         accelerometer?.let {

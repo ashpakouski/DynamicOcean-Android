@@ -1,9 +1,9 @@
-package com.shpak.dynamicocean.repository
+package com.shpak.dynamicocean.old.repository
 
 import android.content.Context
 import com.google.gson.Gson
-import com.shpak.dynamicocean.model.DeviceScreen
-import com.shpak.dynamicocean.model.DisplayCutout
+import com.shpak.dynamicocean.old.model.DeviceScreen
+import com.shpak.dynamicocean.old.model.DisplayCutout
 
 class DeviceScreenDataRepository(context: Context) :
     SharedPreferencesRepository(context),

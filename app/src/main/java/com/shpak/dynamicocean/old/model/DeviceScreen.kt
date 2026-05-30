@@ -1,4 +1,4 @@
-package com.shpak.dynamicocean.model
+package com.shpak.dynamicocean.old.model
 
 data class DeviceScreen(
     val width: Int,

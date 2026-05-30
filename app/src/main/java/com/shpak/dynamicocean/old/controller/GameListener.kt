@@ -1,7 +1,7 @@
-package com.shpak.dynamicocean.controller
+package com.shpak.dynamicocean.old.controller
 
-import com.shpak.dynamicocean.model.GameField
-import com.shpak.dynamicocean.model.GameObject
+import com.shpak.dynamicocean.old.model.GameField
+import com.shpak.dynamicocean.old.model.GameObject
 
 interface GameListener {
     // Game field

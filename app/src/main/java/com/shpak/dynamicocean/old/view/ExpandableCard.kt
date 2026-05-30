@@ -1,4 +1,4 @@
-package com.shpak.dynamicocean.view
+package com.shpak.dynamicocean.old.view
 
 import android.content.Context
 import android.util.AttributeSet

@@ -1,4 +1,4 @@
-package com.shpak.dynamicocean
+package com.shpak.dynamicocean.old
 
 import android.Manifest
 import android.content.Intent
@@ -15,14 +15,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.shpak.dynamicocean.model.DeviceScreen
-import com.shpak.dynamicocean.model.DisplayCutout
-import com.shpak.dynamicocean.model.toDisplayCutout
-import com.shpak.dynamicocean.repository.DeviceScreenDataRepository
-import com.shpak.dynamicocean.repository.OceanGameStatRepository
-import com.shpak.dynamicocean.repository.ScreenDataRepository
-import com.shpak.dynamicocean.service.DynamicOceanService
-import com.shpak.dynamicocean.viewmodel.TestViewModel
+import com.shpak.dynamicocean.R
+import com.shpak.dynamicocean.old.model.DeviceScreen
+import com.shpak.dynamicocean.old.model.DisplayCutout
+import com.shpak.dynamicocean.old.model.toDisplayCutout
+import com.shpak.dynamicocean.old.repository.DeviceScreenDataRepository
+import com.shpak.dynamicocean.old.repository.OceanGameStatRepository
+import com.shpak.dynamicocean.old.repository.ScreenDataRepository
+import com.shpak.dynamicocean.old.service.DynamicOceanService
+import com.shpak.dynamicocean.old.viewmodel.TestViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {

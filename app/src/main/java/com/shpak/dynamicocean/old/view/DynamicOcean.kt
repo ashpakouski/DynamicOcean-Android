@@ -1,4 +1,4 @@
-package com.shpak.dynamicocean.view
+package com.shpak.dynamicocean.old.view
 
 import android.animation.ObjectAnimator
 import android.content.Context
@@ -9,9 +9,9 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import com.shpak.dynamicocean.R
-import com.shpak.dynamicocean.controller.GameListener
-import com.shpak.dynamicocean.model.GameField
-import com.shpak.dynamicocean.model.GameObject
+import com.shpak.dynamicocean.old.controller.GameListener
+import com.shpak.dynamicocean.old.model.GameField
+import com.shpak.dynamicocean.old.model.GameObject
 
 class DynamicOcean(private val context: Context) : GameListener {
     private var rootView: View? = null

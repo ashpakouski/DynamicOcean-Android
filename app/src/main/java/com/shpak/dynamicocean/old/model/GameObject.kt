@@ -1,4 +1,4 @@
-package com.shpak.dynamicocean.model
+package com.shpak.dynamicocean.old.model
 
 // Common rect structure
 data class GameObject(

@@ -1,8 +1,10 @@
-package com.shpak.dynamicocean.controller
+package com.shpak.dynamicocean.old.controller
 
-import com.shpak.dynamicocean.model.*
-import com.shpak.dynamicocean.repository.GameStatRepository
-import com.shpak.dynamicocean.repository.ScreenDataRepository
+import com.shpak.dynamicocean.old.model.FieldHole
+import com.shpak.dynamicocean.old.model.GameField
+import com.shpak.dynamicocean.old.model.GameObject
+import com.shpak.dynamicocean.old.repository.GameStatRepository
+import com.shpak.dynamicocean.old.repository.ScreenDataRepository
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt

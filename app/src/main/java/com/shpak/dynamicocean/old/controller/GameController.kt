@@ -1,4 +1,4 @@
-package com.shpak.dynamicocean.controller
+package com.shpak.dynamicocean.old.controller
 
 interface GameController {
     // Game field

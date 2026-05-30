@@ -1,8 +1,8 @@
 package com.shpak.dynamicocean.di
 
-import com.shpak.dynamicocean.repository.DummyTestRepository
-import com.shpak.dynamicocean.repository.TestRepository
-import com.shpak.dynamicocean.viewmodel.TestViewModel
+import com.shpak.dynamicocean.old.repository.DummyTestRepository
+import com.shpak.dynamicocean.old.repository.TestRepository
+import com.shpak.dynamicocean.old.viewmodel.TestViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
