@@ -11,6 +11,8 @@ class DynamicOceanApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        throw Exception("Code Rabbit Test")
+
         startKoin {
             androidLogger()
             androidContext(this@DynamicOceanApplication)
