@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -8,10 +9,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtension.get()
     }
 
     defaultConfig {
@@ -52,7 +49,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     // Serialization
-    implementation(libs.gson)
+    implementation(libs.gson) // TODO: Remove
+    implementation(libs.kotlinx.serialization.json)
 
     // Compose
     implementation(libs.androidx.activity.compose)
@@ -67,4 +65,9 @@ dependencies {
 
     // Dependency Injection
     implementation(libs.koin.android)
+
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.viewmodel)
+    implementation(libs.androidx.material3)
 }

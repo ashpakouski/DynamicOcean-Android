@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.shpak.dynamicocean.view.ExpandableCard
+    <com.shpak.dynamicocean.old.view.ExpandableCard
         android:id="@+id/game_field"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,5 +26,5 @@
             android:layout_height="0dp"
             android:contentDescription="@string/game_object_blowfish"
             android:src="@drawable/blowfish" />
-    </com.shpak.dynamicocean.view.ExpandableCard>
+    </com.shpak.dynamicocean.old.view.ExpandableCard>
 </LinearLayout>
