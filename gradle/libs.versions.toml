@@ -16,7 +16,6 @@ koin = "4.2.0"
 material3 = "1.4.0"
 navigation3 = "1.1.2"
 navigation3Vm = "2.10.0"
-navigation3Adapter = "1.2.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -35,7 +34,6 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3",
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "navigation3" }
 androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3" }
 androidx-navigation3-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "navigation3Vm" }
-androidx-navigation3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "navigation3Adapter" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }

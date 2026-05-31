@@ -18,11 +18,6 @@ fun AppNavDisplay() {
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ),
-        onBack = {
-            if (backStack.size > 1) {
-                backStack.removeLastOrNull()
-            }
-        },
         entryProvider = entryProvider {
             entry<OceanRoute.Starter> {
                 StarterRoute()
